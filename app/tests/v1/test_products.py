@@ -57,3 +57,15 @@ class TestProducts(unittest.TestCase):
         """Test to get all products"""
         response = self.client().get('/api/v1/products')
         self.assertEqual(response.status_code, 200)
+    
+    def test_for_fetching_a_specific_order(self):
+        """Test to successfully fetch a specific product"""
+        response = self.client().get('/api/v1/products/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Bread", str(response.data))
+    
+    def test_for_fetching_a_specific_order_fails(self):
+        """Test when a specific product does not exist"""
+        response = self.client().get('/api/v1/products/1000')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Product not found", str(response.data))
