@@ -58,6 +58,15 @@ class Products():
 
     def get_all_products(self):
         """Fetch all products from the products list"""
+        # If products list is empty
         if len(products) == 0:
             return {'msg':'No products added yet'}, 200
         return {'products':products}, 200
+    
+    def get_one_product(self, product_id):
+        """Fetches a specific product from the products list"""
+        product = [product for product in products if product['id'] == product_id]
+        if product:
+            return {'product': product[0]}, 200
+        # no products found
+        return {'msg':'Product not found'}, 404

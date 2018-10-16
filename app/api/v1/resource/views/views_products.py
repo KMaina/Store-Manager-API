@@ -21,3 +21,11 @@ class NewProducts(Resource):
     def get(self):
         """Route to fetch all products"""
         return Products().get_all_products()
+    
+class GetProduct(Resource):
+    """
+    Class to handle fetching a specific product
+    GET /api/v1/products/<int:product_id> -> Fetches a specific product 
+    """
+    def get(self, product_id):
+        return Products().get_one_product(product_id)

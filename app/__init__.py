@@ -3,7 +3,7 @@
 from flask import Flask
 from flask_restful import Api
 
-from app.api.v1.resource.views.views_products import NewProducts
+from app.api.v1.resource.views.views_products import NewProducts, GetProduct
 
 from instance.config import app_config
 
@@ -16,6 +16,6 @@ def create_app(config_name):
     # Initialize flask_restful and add routes
     api_endpoint = Api(app)
     api_endpoint.add_resource(NewProducts, '/api/v1/products')
-    
+    api_endpoint.add_resource(GetProduct, '/api/v1/products/<int:product_id>')
 
     return app
