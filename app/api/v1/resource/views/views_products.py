@@ -18,3 +18,6 @@ class NewProducts(Resource):
             request.json['price'],
             request.json['reorder'])
     
+    def get(self):
+        """Route to fetch all products"""
+        return Products().get_all_products()

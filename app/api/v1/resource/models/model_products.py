@@ -27,6 +27,7 @@ def check_if_numbers_are_negatives(quantity, price, reorder):
 class Products():
     """Class to handle """
     def add_product(self, name, quantity, price, reorder):
+        """Add a product to the products list"""
         # Get the JSON object values
         name = request.json.get('name', None)
         quantity = request.json.get('quantity', None)
@@ -54,3 +55,9 @@ class Products():
         # Append to the products list
         products.append(product_dict)
         return {"msg": "Product successfully created"}, 201
+
+    def get_all_products(self):
+        """Fetch all products from the products list"""
+        if len(products) == 0:
+            return {'msg':'No products added yet'}, 200
+        return {'products':products}, 200
