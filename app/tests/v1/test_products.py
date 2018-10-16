@@ -27,7 +27,7 @@ class TestProducts(unittest.TestCase):
             "quantity":50,
             "price":1,
             "reorder":20
-        }     
+        }
 
     def test_add_an_order(self):
         """Tests for adding a new product"""
@@ -51,5 +51,9 @@ class TestProducts(unittest.TestCase):
         """Tests if a there are white spaces in the name argument"""
         response = self.client().post('/api/v1/products', data=json.dumps(self.product_3), content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        self.assertIn("Product successfully created", str(response.data)) 
-        
+        self.assertIn("Product successfully created", str(response.data))
+    
+    def test_to_get_all_products(self):
+        """Test to get all products"""
+        response = self.client().get('/api/v1/products')
+        self.assertEqual(response.status_code, 200)
