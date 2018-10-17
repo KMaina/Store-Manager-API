@@ -1,25 +1,30 @@
 """The configuration for the app"""
+import os
 
 class Config(object):
     """Parent configuration class."""
-    pass
+    DEBUG = False
+    SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 class DevelopmentConfig(Config):
     """Configurations for Development."""
-    pass
+    DEBUG = True
 
 
 class TestingConfig(Config):
     """Configurations for Testing"""
-    pass
+    TESTING = True
+    DEBUG = True
 
 class StagingConfig(Config):
     """Configurations for Staging."""
-    pass
+    DEBUG = True
 
 class ProductionConfig(Config):
     """Configurations for Production."""
-    pass
+    DEBUG = False
+    TESTING = False
 
 app_config = {
     'development': DevelopmentConfig,
