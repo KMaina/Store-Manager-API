@@ -43,3 +43,9 @@ class TestProducts(unittest.TestCase):
             response = self.client().post('/api/v1/auth/signup', data=json.dumps(self.user2), content_type='application/json')
             self.assertEqual(response.status_code, 400)
             self.assertIn("Password length should be between 6 and 12 characters long", str(response.data))
+
+        def test_fetch_all_users(self):
+            """Tests for fetching all users"""
+            response = self.client().get('/api/v1/users')
+            self.assertEqual(response.status_code, 200)
+        
