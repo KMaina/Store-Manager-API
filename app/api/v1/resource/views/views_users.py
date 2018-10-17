@@ -6,9 +6,8 @@ from app.api.v1.resource.models.model_users import Users
 
 class NewUsers(Resource):
     """
-    Class to handle adding and fetching all products
+    Class to handle adding users
     POST /api/v1/auth/signup -> Creates a new user
-    GET /api/v1/users -> Gets all users
     """
     def post(self):
         """Route to handle creating users"""
@@ -16,3 +15,12 @@ class NewUsers(Resource):
             request.json['name'],
             request.json['password'],
             request.json['confirm'])
+
+class GetAllUsers(Resource):
+    """
+    Class to handle fetching all users
+    GET /api/v1/users -> Gets all users
+    """
+    def get(self):
+        """Route to fecth all users"""
+        return Users().get_all_users()

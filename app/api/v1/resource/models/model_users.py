@@ -36,9 +36,12 @@ class Users():
             "id": len(users) + 1,
             "name" : name.rstrip(),
             "password" : password,
-            "admin" : False,
+            "admin" : False
         }
         users.append(user_dict)
         return {'msg':"User Successfully created"}, 201
     
-
+    def get_all_users(self):
+        if len(users) == 0:
+            return {'msg':'No users added yet'}, 404
+        return {'users': users}, 200
