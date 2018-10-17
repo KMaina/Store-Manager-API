@@ -48,4 +48,15 @@ class TestProducts(unittest.TestCase):
             """Tests for fetching all users"""
             response = self.client().get('/api/v1/users')
             self.assertEqual(response.status_code, 200)
-        
+
+        def test_fetch_a_specific_user(self):
+            """Tests for fetching a specific user"""
+            response = self.client().get('/api/v1/users/1')
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("Ken", str(response.data))
+
+        def test_for_fetching_a_specific_user_fails(self):
+            """Test for fetching a specific user fails"""
+            response = self.client().get('/api/v1/products/1000')
+            self.assertEqual(response.status_code, 404)
+            self.assertIn("User not found", str(response.data))
