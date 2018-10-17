@@ -60,5 +60,3 @@ class TestUsers(unittest.TestCase):
         response = self.client().get('/api/v1/users/1000')
         self.assertEqual(response.status_code, 404)
         self.assertIn("User not found", str(response.data))
-
-       
