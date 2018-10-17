@@ -42,6 +42,14 @@ class Users():
         return {'msg':"User Successfully created"}, 201
     
     def get_all_users(self):
+        "Fetch all users"
         if len(users) == 0:
             return {'msg':'No users added yet'}, 404
         return {'users': users}, 200
+    
+    def get_one_user(self, user_id):
+        """Fetches a specific user from the users list"""
+        user = [user for user in users if user['id'] == user_id]
+        if user:
+            return {'user': user[0]}, 200
+        return {'msg':'User not found'}, 404

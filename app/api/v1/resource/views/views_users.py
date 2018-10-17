@@ -24,3 +24,11 @@ class GetAllUsers(Resource):
     def get(self):
         """Route to fecth all users"""
         return Users().get_all_users()
+
+class GetUser(Resource):
+    """
+    Class to handle fetching a specific user
+    GET /api/v1/users/<int:user_id> -> Fetches a specific user 
+    """
+    def get(self, user_id):
+        return Users().get_one_user(user_id)
