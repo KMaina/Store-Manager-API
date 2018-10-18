@@ -4,6 +4,8 @@ from flask import Flask
 from flask_restful import Api
 
 from app.api.v1.resource.views.views_users import NewUsers, GetAllUsers, GetUser
+from app.api.v1.resource.views.views_products import NewProducts, GetProduct
+
 
 from instance.config import app_config
 
@@ -18,5 +20,7 @@ def create_app(config_name):
     api_endpoint.add_resource(NewUsers, '/api/v1/auth/signup')
     api_endpoint.add_resource(GetAllUsers, '/api/v1/users')
     api_endpoint.add_resource(GetUser, '/api/v1/users/<int:user_id>')
+    api_endpoint.add_resource(NewProducts, '/api/v1/products')
+    api_endpoint.add_resource(GetProduct, '/api/v1/products/<int:product_id>')
 
     return app
