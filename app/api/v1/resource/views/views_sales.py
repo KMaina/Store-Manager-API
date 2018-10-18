@@ -9,6 +9,7 @@ class MakeSale(Resource):
     """
     Class to handle creating sales
     POST /api/v1/sales -> Creates a new sale record
+    GET /api/v1/sales -> Fetch all sales records
     """
 
     @jwt_required
@@ -36,4 +37,13 @@ class MakeSale(Resource):
         if current_user['admin'] == False:
             return {'msg':'Sorry, this route is only accessible to admins'}, 403
         return Sales().get_all_sales()
-        
+    
+class GetSpecificSale(Resource):
+    """
+    Class to fetch a specific record
+    GET /api/v1/sales/<int:sale_id> -> Fetch a specific sale record
+    """
+    @jwt_required
+    def get(self, sale_id):
+        """Route to handle fetching a specific record"""
+        return Sales().get_one_sale(sale_id)

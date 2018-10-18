@@ -28,6 +28,5 @@ class GetProduct(Resource):
     GET /api/v1/products/<int:product_id> -> Fetches a specific product 
     """
     def get(self, product_id):
-	"""Route to fetch a specific product"""
+        """Route to fetch a specific product"""
         return Products().get_one_product(product_id)
-

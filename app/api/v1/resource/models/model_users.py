@@ -6,6 +6,15 @@ from flask_jwt_extended import create_access_token
 # List to hold all users
 users = []
 
+def generate_admin():
+    users_dict = {
+        "id": 0,
+        "name" : "admin",
+        "password" : "admin123",
+        "admin" : True
+    }
+    users.append(users_dict)
+
 def check_if_user_exists(item):
     """
     Helper function to check if a user exists
