@@ -47,3 +47,4 @@ class GetSpecificSale(Resource):
     def get(self, sale_id):
         """Route to handle fetching a specific record"""
         return Sales().get_one_sale(sale_id)
+

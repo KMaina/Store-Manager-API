@@ -30,3 +30,4 @@ class GetProduct(Resource):
     def get(self, product_id):
         """Route to fetch a specific product"""
         return Products().get_one_product(product_id)
+

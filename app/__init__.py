@@ -37,3 +37,4 @@ def create_app(config_name):
     jwt = JWTManager(app)
 
     return app
+

@@ -85,3 +85,4 @@ class Users():
         user = [user for user in users if user['name'] == name.rstrip()]
         access_token = create_access_token(identity={'name':user[0]['name'], 'id':user[0]['id'], 'admin':user[0]['admin']})
         return {'msg':access_token}
+

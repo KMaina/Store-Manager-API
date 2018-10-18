@@ -43,3 +43,4 @@ class LoginUser(Resource):
             request.json['name'],
             request.json['password'],
         )
+

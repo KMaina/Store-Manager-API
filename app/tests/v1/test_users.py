@@ -86,3 +86,4 @@ class TestUsers(unittest.TestCase):
         print(response.data)
         self.assertEqual(response.status_code, 400)
         self.assertIn('Error logging in, ensure username or password are correct', str(response.data))
+
