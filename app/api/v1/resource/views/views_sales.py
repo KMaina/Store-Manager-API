@@ -10,6 +10,7 @@ class MakeSale(Resource):
     Class to handle creating sales
     POST /api/v1/sales -> Creates a new sale record
     """
+
     @jwt_required
     def post(self):
         """Route to handle creating a new sale"""
@@ -25,3 +26,14 @@ class MakeSale(Resource):
             request.json['quantity'],
             request.json['price'])
     
+    @jwt_required
+    def get(self):
+        """Route to handle getting all sales"""
+        # Gets user info from the token
+        current_user = get_jwt_identity()
+
+        # Checks if the user is an attendant
+        if current_user['admin'] == False:
+            return {'msg':'Sorry, this route is only accessible to admins'}, 403
+        return Sales().get_all_sales()
+        

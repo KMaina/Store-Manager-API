@@ -53,3 +53,9 @@ class Sales():
         sales.append(sales_dict)
         return {'sale': sales_dict}, 201
     
+    def get_all_sales(self):
+        """Method to fetch all sales"""
+        if len(sales) == 0:
+            return {'msg':'No sales made yet'}, 404
+        return {'sales':sales}
+        
