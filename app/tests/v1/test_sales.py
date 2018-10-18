@@ -87,3 +87,26 @@ class TestSales(unittest.TestCase):
         resp_sale = self.client().post('/api/v1/sales', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.sale), content_type='application/json')
         self.assertEqual(resp_sale.status_code, 403)
         self.assertIn('Sorry, this route is not accessible to admins', str(resp_sale.data))
+
+    def test_get_sale_if_user_is_admin(self):
+        """Tests if an admin can fetch all sales"""
+        generate_admin()
+        res_login = self.client().post('/api/v1/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_output = json.loads(res_login.data)
+        access_token = json_output.get('msg')
+        self.assertEqual(res_login.status_code, 200)
+        response = self.client().get('/api/v1/sales', headers = {"Authorization":"Bearer " + access_token})
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_sale_if_user_is_not_admin(self):
+        """Tests if a non-admin can fetch all sales"""
+        response = self.client().post('/api/v1/auth/signup', data=json.dumps(self.user_reg1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        res_login = self.client().post('/api/v1/auth/login', data=json.dumps(self.user_login1), content_type='application/json')
+        json_output = json.loads(res_login.data)
+        access_token = json_output.get('msg')
+        self.assertEqual(res_login.status_code, 200)
+        response = self.client().get('/api/v1/sales', headers = {"Authorization":"Bearer " + access_token})
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Sorry, this route is only accessible to admins", str(response.data
+
