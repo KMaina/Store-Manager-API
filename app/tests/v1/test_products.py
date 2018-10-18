@@ -69,3 +69,4 @@ class TestProducts(unittest.TestCase):
         response = self.client().get('/api/v1/products/1000')
         self.assertEqual(response.status_code, 404)
         self.assertIn("Product not found", str(response.data))
+

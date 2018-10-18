@@ -23,7 +23,6 @@ class StagingConfig(Config):
 
 class ProductionConfig(Config):
     """Configurations for Production."""
-    DEBUG = False
     TESTING = False
 
 app_config = {
@@ -32,3 +31,4 @@ app_config = {
     'staging': StagingConfig,
     'production': ProductionConfig,
 }
+

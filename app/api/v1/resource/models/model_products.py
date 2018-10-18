@@ -7,7 +7,7 @@ products = []
 
 def check_if_product_exists(item):
     """
-    Helper function to check if a user exists
+    Helper function to check if a product exists
     Returns True if product already exists, else returns False
     """
     product = [product for product in products if product['name'] == item.rstrip()]
@@ -70,3 +70,4 @@ class Products():
             return {'product': product[0]}, 200
         # no products found
         return {'msg':'Product not found'}, 404
+
