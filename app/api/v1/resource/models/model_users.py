@@ -38,6 +38,7 @@ def verify_credentials(name, password):
 class Users():
     """Class to handle users"""
     def add_user(self, name, password, confirm):
+        """Registers a new user"""
         name = request.json.get('name', None)
         password = request.json.get('password', None)
         confirm = request.json.get('confirm', None)
@@ -75,6 +76,7 @@ class Users():
         return {'msg':'User not found'}, 404
 
     def login(self, name, password):
+        """Logs in a user"""
         name = request.json.get('name', None)
         password = request.json.get('password', None)
         
@@ -84,5 +86,5 @@ class Users():
         
         user = [user for user in users if user['name'] == name.rstrip()]
         access_token = create_access_token(identity={'name':user[0]['name'], 'id':user[0]['id'], 'admin':user[0]['admin']})
-        return {'msg':access_token}
 
+        return {'msg':access_token}
