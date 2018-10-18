@@ -97,7 +97,7 @@ class TestSales(unittest.TestCase):
         self.assertEqual(res_login.status_code, 200)
         response = self.client().get('/api/v1/sales', headers = {"Authorization":"Bearer " + access_token})
         self.assertEqual(response.status_code, 200)
-
+    
     def test_get_sale_if_user_is_not_admin(self):
         """Tests if a non-admin can fetch all sales"""
         response = self.client().post('/api/v1/auth/signup', data=json.dumps(self.user_reg1), content_type='application/json')
@@ -108,5 +108,15 @@ class TestSales(unittest.TestCase):
         self.assertEqual(res_login.status_code, 200)
         response = self.client().get('/api/v1/sales', headers = {"Authorization":"Bearer " + access_token})
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Sorry, this route is only accessible to admins", str(response.data
+        self.assertIn("Sorry, this route is only accessible to admins", str(response.data))
+
+    def test_get_sale(self):
+        """Test to fetch a single record"""
+        res_login = self.client().post('/api/v1/auth/login', data=json.dumps(self.user_login2), content_type='application/json')
+        json_output = json.loads(res_login.data)
+        access_token = json_output.get('msg')
+        self.assertEqual(res_login.status_code, 200) 
+        response = self.client().get('/api/v1/sales/1', headers = {"Authorization":"Bearer " + access_token})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Soap', str(response.data))
 
