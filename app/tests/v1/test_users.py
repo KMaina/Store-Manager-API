@@ -79,5 +79,3 @@ class TestUsers(unittest.TestCase):
         response = self.client().post('/api/v1/auth/login', data=json.dumps(self.login1), content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertIn('Error logging in, ensure username or password are correct', str(response.data))
-    
-    
