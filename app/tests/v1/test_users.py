@@ -25,6 +25,14 @@ class TestUsers(unittest.TestCase):
             "password":"pass",
             "confirm":"pass"
         }
+        self.login = {
+            "name":"Ken",
+            "password":"pass123"
+        }
+        self.login1 = {
+            "name":"Mike",
+            "password":"pass123"
+        }
 
     def test_add_user(self):
         """Tests for adding a new user"""
@@ -60,3 +68,16 @@ class TestUsers(unittest.TestCase):
         response = self.client().get('/api/v1/users/1000')
         self.assertEqual(response.status_code, 404)
         self.assertIn("User not found", str(response.data))
+
+    def test_for_successful_login(self):
+        """Tests if a user successfully logged in"""
+        response = self.client().post('/api/v1/auth/login', data=json.dumps(self.login), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+    
+    def test_wrong_credentials_supplied(self):
+        """Tests if the wrong credentials were passed in"""
+        response = self.client().post('/api/v1/auth/login', data=json.dumps(self.login1), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('Error logging in, ensure username or password are correct', str(response.data))
+    
+    

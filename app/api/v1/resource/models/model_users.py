@@ -1,6 +1,7 @@
 """handles all operations for creating and fetching data relating to users"""
 
 from flask import request
+from flask_jwt_extended import create_access_token
 
 # List to hold all users
 users = []
@@ -11,6 +12,16 @@ def check_if_user_exists(item):
     Returns True if user already exists, else returns False
     """
     user = [user for user in users if user['name'] == item.rstrip()]
+    if user:
+        return True
+    return False
+
+def verify_credentials(name, password):
+    """
+    Helper function to check if passwords match
+    Returns True if user already exists, else returns False
+    """
+    user = [user for user in users if user['name'] == name and user['password'] == password]
     if user:
         return True
     return False
@@ -53,3 +64,15 @@ class Users():
         if user:
             return {'user': user[0]}, 200
         return {'msg':'User not found'}, 404
+
+    def login(self, name, password):
+        name = request.json.get('name', None)
+        password = request.json.get('password', None)
+        
+        credentials = verify_credentials(name, password)
+        if not credentials:
+            return {'msg':'Error logging in, ensure username or password are correct'}, 400
+        
+        user = [user for user in users if user['name'] == name.rstrip()]
+        access_token = create_access_token(identity={'name':user[0]['name'], 'id':user[0]['id'], 'admin':user[0]['admin']})
+        return {'msg':access_token}

@@ -32,3 +32,14 @@ class GetUser(Resource):
     """
     def get(self, user_id):
         return Users().get_one_user(user_id)
+
+class LoginUser(Resource):
+    """
+    Class to handle user login
+    POST '/api/v1/auth/login' -> Logs in a user
+    """
+    def post(self):
+        return Users().login(
+            request.json['name'],
+            request.json['password'],
+        )
