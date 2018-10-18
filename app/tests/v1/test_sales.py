@@ -27,12 +27,12 @@ class TestSales(unittest.TestCase):
             "password":"pass123"
         }
         self.user_reg2 = {
-            "name":"Mike",
+            "name":"Ken",
             "password":"pass123",
             "confirm":"pass123"
         }
         self.user_login2 = {
-            "name":"Mike",
+            "name":"Ken",
             "password":"pass123"
         }
         self.user_reg3 = {
