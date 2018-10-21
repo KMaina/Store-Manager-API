@@ -4,36 +4,12 @@ An app to manage store operations
 
 [![Build Status](https://travis-ci.org/KMaina/Store-Manager-API.svg?branch=develop)](https://travis-ci.org/KMaina/Store-Manager-API)
 [![Coverage Status](https://coveralls.io/repos/github/KMaina/Store-Manager-API/badge.svg)](https://coveralls.io/github/KMaina/Store-Manager-API)
-[![Maintainability](https://api.codeclimate.com/v1/badges/48577eef61885d26403e/maintainability)](https://codeclimate.com/github/KMaina/Store-Manager-API/maintainability)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c279fc6f6b9340248a8cba7bb8096841)](https://www.codacy.com/app/KMaina/Store-Manager-API?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KMaina/Store-Manager-API&amp;utm_campaign=Badge_Grade)
 
 ## Installation
 
 - clone the repo locally in a terminal using `git clone https://github.com/KMaina/Store-Manager-API.git`
 - cd into the `Store-Manager-API folder`
-
-## Example Usage
-- In Postman, add the address `127.0.0.1:5000/api/v1/auth/signup` to the `POST` method
-- Add a JSON body to register into the app
-```
-{
-  "name":"Ken Maina",
-  "password":"mysecret",
-  "confirm":"mysecret"
-}
-```
-- Hit the send button and get the response `{'msg':"User Successfully created"}`
-- To add a product, add `127.0.0.1:5000/api/v1/products` to the `POST` method
-use the following JSON body
-```
-{
-  "name":"eggs",
-  "quantity":50,
-  "price":20,
-  "reorder":10
-}
-```
-- Hit the send button and get the response `{'msg':"Product Successfully created"}`
-## Development Setup
 - Create a virtual environmnet using the command `virtualenv -p python3 venv`
 - On Linux and OS X activate using
 ```
@@ -59,6 +35,29 @@ set SECRET_KEY=verysecret #change-this!
 - For unit tests and coverage run the command `coverage run --source=app -m pytest && coverage report`
 - Once done, deactivate the virtual environment by running `deactivate` in the terminal
 
+
+## Example Usage
+- In Postman, add the address `127.0.0.1:5000/api/v1/auth/signup` to the `POST` method
+- Add a JSON body to register into the app
+```
+{
+  "name":"Ken Maina",
+  "password":"mysecret",
+  "confirm":"mysecret"
+}
+```
+- Hit the send button and get the response `{'msg':"User Successfully created"}`
+- To add a product, add `127.0.0.1:5000/api/v1/products` to the `POST` method
+use the following JSON body
+```
+{
+  "name":"eggs",
+  "quantity":50,
+  "price":20,
+  "reorder":10
+}
+```
+- Hit the send button and get the response `{'msg':"Product Successfully created"}`
 ## Meta
 Ken Maina - maina.ken0@gmail.com
 https://github.com/KMaina
