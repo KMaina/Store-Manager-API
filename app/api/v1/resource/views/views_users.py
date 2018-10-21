@@ -1,8 +1,13 @@
 """Views for the Users Resource"""
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask import request
 
 from app.api.v1.resource.models.model_users import Users
+
+parser = reqparse.RequestParser(bundle_errors=True)
+parser.add_argument('name', help="You must supply a name", required='True')
+parser.add_argument('password', help="You must supply a password", required='True')
+parser.add_argument('confirm', help="You must supply a confirmation for your password", required='True')
 
 class NewUsers(Resource):
     """
@@ -11,10 +16,11 @@ class NewUsers(Resource):
     """
     def post(self):
         """Route to handle creating users"""
+        args = parser.parse_args()
         return Users().add_user(
-            request.json['name'],
-            request.json['password'],
-            request.json['confirm'])
+            args['name'],
+            args['password'],
+            args['confirm'])
 
 class GetAllUsers(Resource):
     """

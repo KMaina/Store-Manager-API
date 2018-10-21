@@ -42,16 +42,20 @@ class Users():
         name = request.json.get('name', None)
         password = request.json.get('password', None)
         confirm = request.json.get('confirm', None)
-    
+
+        # Checks for empty inputs
+        if name == '' or password == '' or confirm == '':
+            return {'error': 'Fields cannot be empty'}, 401
+
         if password != confirm:
-            return {'msg':"Passwords do not match"}, 400
+            return {'msg':"Passwords do not match"}, 401
 
         if len(password) < 6 or len(password) > 12:
-            return {'msg': "Password length should be between 6 and 12 characters long"}, 400
+            return {'msg': "Password length should be between 6 and 12 characters long"}, 401
 
         duplicate = check_if_user_exists(name)
         if duplicate:
-            return {'msg':'User already exists'}, 400    
+            return {'msg':'User already exists'}, 401
         
         user_dict = {
             "id": len(users) + 1,
@@ -80,11 +84,15 @@ class Users():
         name = request.json.get('name', None)
         password = request.json.get('password', None)
         
+        # Check for enpty inputs
+        if name == '' or password == '':
+            return {'error': 'Fields cannot be empty'}, 401
+
         credentials = verify_credentials(name, password)
         if not credentials:
-            return {'msg':'Error logging in, ensure username or password are correct'}, 400
+            return {'msg':'Error logging in, ensure username or password are correct'}, 401
         
         user = [user for user in users if user['name'] == name.rstrip()]
         access_token = create_access_token(identity={'name':user[0]['name'], 'id':user[0]['id'], 'admin':user[0]['admin']})
 
-        return {'msg':access_token}
+        return {'msg':access_token}, 200
