@@ -25,6 +25,9 @@ class Sales():
         quantity = request.json.get('quantity', None)
         price = request.json.get('price', None)
 
+        if product == '' or quantity == '' or price == '':
+            return {'error': 'Fields cannot be empty'}, 401
+
         # Get info regarding the user from the token
         current_user = get_jwt_identity() 
 
@@ -36,7 +39,7 @@ class Sales():
         # Checks the amount ordered against that in stock
         amount = check_for_quantity_of_product(quantity)
         if amount:
-            return {'msg':'You cannot order more than what is in stock'}, 400
+            return {'msg':'You cannot order more than what is in stock'}, 401
         
         # Finds the total cost for the transaction
         total_cost = price * quantity
