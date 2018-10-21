@@ -34,15 +34,18 @@ class Products():
         price = request.json.get('price', None)
         reorder = request.json.get('reorder', None)
 
+        if name == '' or quantity == '' or price == '' or reorder == '':
+            return {'error': 'Fields cannot be empty'}, 401 
+
         # Check for duplicate items
         present = check_if_product_exists(name)
         if present:
-            return {'msg':'Product already exists'}, 400
+            return {'msg':'Product already exists'}, 401
 
         # Checks for numbers less than 0
         size = check_if_numbers_are_negatives(quantity, price, reorder)
         if size:
-            return {'msg':'Cannot supply a value less than 0'}, 400
+            return {'msg':'Cannot supply a value less than 0'}, 401
         
         # Add all values to a product dictionary
         product_dict={

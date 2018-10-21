@@ -46,13 +46,13 @@ class TestUsers(unittest.TestCase):
     def test_add_user_wrong_passwords(self):
         """Tests for checking if password match"""
         response = self.client().post('/api/v1/auth/signup', data=json.dumps(self.user1), content_type='application/json')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         self.assertIn("Passwords do not match", str(response.data))
     
     def test_password_length(self):
         """Tests for the length of the passwords"""
         response = self.client().post('/api/v1/auth/signup', data=json.dumps(self.user2), content_type='application/json')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         self.assertIn("Password length should be between 6 and 12 characters long", str(response.data))
 
     def test_fetch_all_users(self):
@@ -81,6 +81,6 @@ class TestUsers(unittest.TestCase):
     def test_wrong_credentials_supplied(self):
         """Tests if the wrong credentials were passed in"""
         response = self.client().post('/api/v1/auth/login', data=json.dumps(self.login1), content_type='application/json')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 401)
         self.assertIn('Error logging in, ensure username or password are correct', str(response.data))
  
