@@ -16,7 +16,7 @@ def create_app(config_name):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
 
-    # Catch all 404 errors 
+    # Catch all 400 errors 
     @app.errorhandler(400)
     def bad_request_error(error):
         """400 error handler."""
@@ -28,7 +28,7 @@ def create_app(config_name):
         """404 error handler."""
         return jsonify({"error": "Page not found."}), 404
     
-    # Catch all 404 errors 
+    # Catch all 500 errors 
     @app.errorhandler(500)
     def internal_server_error(error):
         """500 error handler."""
@@ -55,3 +55,4 @@ def create_app(config_name):
     jwt = JWTManager(app)
 
     return app
+
