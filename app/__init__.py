@@ -1,6 +1,6 @@
 """Initializes the flask app"""
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
@@ -14,7 +14,25 @@ def create_app(config_name):
     """Factory initialization for the app"""
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
-    app.config.from_pyfile('config.py')   
+    app.config.from_pyfile('config.py')
+
+    # Catch all 400 errors 
+    @app.errorhandler(400)
+    def bad_request_error(error):
+        """400 error handler."""
+        return jsonify({"error": "A bad request was sent to the server."}), 400
+
+    # Catch all 404 errors 
+    @app.errorhandler(404)
+    def not_found_error(error):
+        """404 error handler."""
+        return jsonify({"error": "Page not found."}), 404
+    
+    # Catch all 500 errors 
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        """500 error handler."""
+        return jsonify({"error": "Internal server error has occured."}), 500
 
     # Initialize flask_restful and add routes
     api_endpoint = Api(app)

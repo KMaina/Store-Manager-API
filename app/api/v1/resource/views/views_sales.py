@@ -1,9 +1,14 @@
 """Views for the sales resource"""
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.api.v1.resource.models.model_sales import Sales
+
+parser = reqparse.RequestParser(bundle_errors=True)
+parser.add_argument('product', help="You must supply the product name", required='True')
+parser.add_argument('quantity', help="You must supply the quantity", required='True')
+parser.add_argument('price', help="You must supply the price", required='True')
 
 class MakeSale(Resource):
     """
@@ -15,6 +20,7 @@ class MakeSale(Resource):
     @jwt_required
     def post(self):
         """Route to handle creating a new sale"""
+        args = parser.parse_args()
         # Gets user info from the token
         current_user = get_jwt_identity()
 
@@ -23,9 +29,9 @@ class MakeSale(Resource):
             return {'msg':'Sorry, this route is not accessible to admins'}, 403
 
         return Sales().make_sale(
-            request.json['product'],
-            request.json['quantity'],
-            request.json['price'])
+            args['product'],
+            args['quantity'],
+            args['price'])
     
     @jwt_required
     def get(self):
