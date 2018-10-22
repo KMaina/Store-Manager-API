@@ -16,19 +16,19 @@ def create_app(config_name):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
 
-    # Catch all 404 erros 
+    # Catch all 404 errors 
     @app.errorhandler(400)
     def bad_request_error(error):
         """400 error handler."""
         return jsonify({"error": "A bad request was sent to the server."}), 400
 
-    # Catch all 404 erros 
+    # Catch all 404 errors 
     @app.errorhandler(404)
     def not_found_error(error):
         """404 error handler."""
         return jsonify({"error": "Page not found."}), 404
     
-    # Catch all 404 erros 
+    # Catch all 404 errors 
     @app.errorhandler(500)
     def internal_server_error(error):
         """500 error handler."""
