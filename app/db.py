@@ -36,16 +36,15 @@ def create_tables(cursor):
             quantity INTEGER NOT NULL,
             product_cost INTEGER NOT NULL,
             reorder INTEGER NOT NULL,
-            user_id INT REFERENCES users(user_id) ON DELETE CASCADE
+            user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE
         )
         """,
         """
         CREATE TABLE IF NOT EXISTS sales (
-            sales_id SERIAL,
-            product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
-            totat_cost INT NOT NULL,
-            user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-            PRIMARY KEY (product_id, sales_id, user_id)
+            sales_id SERIAL PRIMARY KEY,
+            totat_cost INTEGER NOT NULL,
+            product_id INTEGER REFERENCES products(product_id) ON DELETE CASCADE,
+            user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE
         )
         """)
 
@@ -83,4 +82,3 @@ def main(config=None):
 
 if __name__ == '__main__':
     main()
-
