@@ -17,7 +17,6 @@ def db_connection(config=None):
 
     return  psycopg2.connect(user=user, password=password, host=host, port=port, database=db_name)
     
-
 def create_tables(cursor):
     """Create all tables"""
     statements = (
@@ -52,7 +51,7 @@ def create_tables(cursor):
     for statement in statements:
         cursor.execute(statement)
 
-def drop_tables(cursor): 
+def drop_tables(cursor):
     """Drops all tables"""
     drops = ["DROP TABLE users CASCADE",
              "DROP TABLE orders CASCADE",
@@ -70,16 +69,10 @@ def main(config=None):
     """
     connection = db_connection(config=config)
     cursor = connection.cursor()
-
     create_tables(cursor)
-
     connection.commit()
-
     cursor.close()
-
     connection.close()
-
-    print('Done')
 
 if __name__ == '__main__':
     main()
