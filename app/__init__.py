@@ -1,12 +1,16 @@
 """Initializes the flask app"""
-
+import os
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
+# v1 imports
 from app.api.v1.resource.views.views_users import NewUsers, GetAllUsers, GetUser, LoginUser
 from app.api.v1.resource.views.views_products import NewProducts, GetProduct
 from app.api.v1.resource.views.views_sales import MakeSale, GetSpecificSale
+
+# v2 imports
+from app.api.v2.resource.models import db
 
 from instance.config import app_config
 
@@ -15,6 +19,10 @@ def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
+
+    # create tables in test and main DB
+    main()
+    main('testing')
 
     # Catch all 400 errors 
     @app.errorhandler(400)
