@@ -27,3 +27,17 @@ class NewProduct(Resource):
             args['quantity'],
             args['product_cost'],
             args['reorder'])
+
+class EditProducts(Resource):
+    """
+    Class to handle editing products
+    PUT /api/v2/products/<int:productId> -> Creates a new products
+    """
+    def put(self):
+        """Route to handle editing a product"""
+        args = parser.parse_args()
+        return Products().add_product(
+            args['name'],
+            args['quantity'],
+            args['product_cost'],
+            args['reorder'])
