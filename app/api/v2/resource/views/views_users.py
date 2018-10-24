@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.api.v2.resource.models.model_users import Users
 
@@ -25,9 +26,13 @@ class RegisterUsers(Resource):
     Class to handle adding users
     POST /api/v2/auth/signup -> Creates a new user
     """
+    @jwt_required
     def post(self):
         """Route to handle creating users"""
         args = parser.parse_args()
+        current_user = get_jwt_identity()
+        if current_user['admin'] == 'False':
+            return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
         return Users().reg_user(
             args['name'],
             args['password'],
