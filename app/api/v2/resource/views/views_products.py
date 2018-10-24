@@ -36,6 +36,9 @@ class EditProducts(Resource):
     def put(self):
         """Route to handle editing a product"""
         args = parser.parse_args()
+        current_user = get_jwt_identity()
+        if current_user['admin'] == False:
+            return {'msg':'Sorry, this route is only accessible to admins'}, 403
         return Products().add_product(
             args['name'],
             args['quantity'],
