@@ -19,6 +19,16 @@ class UserTestCase(unittest.TestCase):
             "name" : "John Smith",
             "confirm" : "mysecret"
         }
+        self.user3 = {
+            "name" : "John Smith",
+            "password" : "",
+            "confirm" : "mysecret"
+        }
+        self.user4 = {
+            "name" : "John Smith",
+            "password" : "pass",
+            "confirm" : "pass"
+        }
     
         with self.app.app_context():
             db.db_connection()
@@ -98,6 +108,14 @@ class UserTestCase(unittest.TestCase):
     
     def test_register_user_as_non_admin(self):
         """Test to register a new user as a non admin"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps({
+            "name":"admin",
+            "password":"passadmin"
+        }), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/auth/signup', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.user), content_type='application/json')
         response = self.client().post('/api/v2/auth/login', data=json.dumps({"name":"Ken Maina","password":"mysecret"}), content_type='application/json')
         json_data = json.loads(response.data)
         access_token = json_data.get('access_token')
@@ -105,3 +123,44 @@ class UserTestCase(unittest.TestCase):
         response = self.client().post('/api/v2/auth/signup', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.user), content_type='application/json')
         self.assertEqual(response.status_code, 403)
         self.assertIn('Sorry, only admins are allowed to access this route', str(response.data))
+    
+    def test_user_register_empty_fields(self):
+        """Test to register a new user with empty inputs"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps({
+            "name":"admin",
+            "password":"passadmin"
+        }), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/auth/signup', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.user3), content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+        self.assertIn('Fields cannot be empty', str(response.data))
+    
+    def test_user_register_illegal_passwords(self):
+        """Test to register a new user with illegal inputs"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps({
+            "name":"admin",
+            "password":"passadmin"
+        }), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/auth/signup', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.user4), content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+        self.assertIn('Password length should be between 6 and 12 characters long', str(response.data))
+    
+    def test_user_register_twice(self):
+        """Test to register an existing user"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps({
+            "name":"admin",
+            "password":"passadmin"
+        }), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/auth/signup', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.user), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().post('/api/v2/auth/signup', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.user), content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+        self.assertIn('User already exists', str(response.data))

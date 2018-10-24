@@ -83,6 +83,6 @@ def check_if_user_exists(name):
         cursor.close()
         connection.close()
         if username:
-            return {'msg' : 'user already exists'}, 401
+            return {'msg' : 'User already exists'}, 401
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 401
