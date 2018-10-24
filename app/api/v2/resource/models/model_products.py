@@ -11,10 +11,23 @@ class Products():
         quantity = request.json.get('quantity', None)
         product_cost = request.json.get('product_cost', None)
         reorder = request.json.get('reorder', None)
+        
+        # Get the ID of the user who created the product
         current_user = get_jwt_identity()
         userid = current_user['id']
+
+        # Checks for empty fields
         if name == '' or quantity == '' or product_cost == '' or reorder == '':
             return {'msg':'Fields cannot be empty'}, 401
+        
+        # Checks for values less than 1
+        if quantity < 1 or product_cost < 1 or reorder < 1:
+            return {'msg':'Values cannot be less than 1'}, 401
+        
+        # Check if a product exists
+        product_duplicate = db.check_if_product_exists(name)
+        if product_duplicate:
+            return product_duplicate
 
         try:
             new_product = "INSERT INTO \
