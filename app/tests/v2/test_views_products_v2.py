@@ -21,6 +21,12 @@ class UserTestCase(unittest.TestCase):
             "product_cost":30,
             "reorder":20
         }
+        self.product_edit = {
+            "name":"eggs",
+            "quantity":50,
+            "product_cost":40,
+            "reorder":20
+        }
         self.product2 = {
             "name":"eggs",
             "quantity":30,
@@ -100,5 +106,53 @@ class UserTestCase(unittest.TestCase):
         access_token = json_data.get('access_token')
         self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product4), content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+        self.assertIn('Values cannot be less than 1', str(response.data))
+
+    def test_edit_product(self):
+        """Test to successfuly edit a product in the database"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().post('/api/v2/product/<int:productId>', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product_edit), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Product successfully edited', str(response.data))
+    
+    def test_edit_missing_values(self):
+        """Test to handle missing parameters"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().post('/api/v2/products/<int:productId>', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product2), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('You must supply the cost of the product', str(response.data))
+    
+    def test_edit_empty_values(self):
+        """Test to handle empty parameters"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().post('/api/v2/products/<int:productId>', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product3), content_type='application/json')
+        self.assertEqual(response.status_code, 401)
+        self.assertIn('Fields cannot be empty', str(response.data))
+    
+    def test_edit_megative_values(self):
+        """Test to handle empty parameters"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().post('/api/v2/products/<int:productId>', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product4), content_type='application/json')
         self.assertEqual(response.status_code, 401)
         self.assertIn('Values cannot be less than 1', str(response.data))
