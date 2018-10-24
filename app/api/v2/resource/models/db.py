@@ -1,7 +1,6 @@
 """
 File to manage the connection to the database, creation and deletion of tables
 """
-import os
 import psycopg2
 from flask import current_app
 
