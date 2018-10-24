@@ -12,7 +12,7 @@ from app.api.v1.resource.views.views_sales import MakeSale, GetSpecificSale
 # v2 imports
 from app.api.v2.resource.models import db
 from app.api.v2.resource.views.views_users import LoginUsers, RegisterUsers
-from app.api.v2.resource.views.views_products import NewProduct
+from app.api.v2.resource.views.views_products import NewProduct, EditProducts
 
 from instance.config import app_config
 
@@ -69,6 +69,7 @@ def create_app(config_name):
 
     # Products Resource v2
     api_endpoint.add_resource(NewProduct, '/api/v2/products')
+    api_endpoint.add_resource(EditProducts, '/api/v2/products/<int:productId>')
 
     # Initializes flask_jwt_extended
     jwt = JWTManager(app)
