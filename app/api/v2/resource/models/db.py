@@ -68,6 +68,24 @@ def generate_admin():
     cursor = connection.cursor()
     cursor.execute(gen_admin)
     connection.commit()
+    
+def check_if_user_exists(name):
+    """
+    Helper function to check if a user exists
+    Returns a message if a user already exists
+    """
+    try:
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM users WHERE username = '{}'".format(name))
+        connection.commit()
+        username = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        if username:
+            return {'msg' : 'User already exists'}, 401
+    except (Exception, psycopg2.DatabaseError) as error:
+        return {'error' : '{}'.format(error)}, 401
 
 def check_if_product_exists(name):
     """

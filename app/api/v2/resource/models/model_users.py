@@ -34,8 +34,42 @@ class Users():
             response.status_code = 401
             return response
         except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
             response = jsonify({'msg':'Problem fetching record from the database'})
             response.status_code = 400
             return response
-            
+    
+    def reg_user(self, name, password, confirm):
+        """Method to handle user creation"""
+        name = request.json.get('name', None)
+        password = request.json.get('password', None)
+        confirm = request.json.get('confirm', None)
+
+        # Check for empty inputs
+        if name == '' or password == '' or confirm == '':
+            return {'error': 'Fields cannot be empty'}, 401
+        
+        if password != confirm:
+            return {'msg':"Passwords do not match"}, 401
+
+        if len(password) < 6 or len(password) > 12:
+            return {'msg': "Password length should be between 6 and 12 characters long"}, 401
+
+        duplicate = db.check_if_user_exists(name)
+        if duplicate:
+            return duplicate
+
+        try:
+            add_user = "INSERT INTO \
+                        users (username, password, admin) \
+                        VALUES ('" + name +"', '" + password +"',  false )"
+            connection = db.db_connection()
+            cursor = connection.cursor()
+            cursor.execute(add_user)
+            connection.commit()
+            response = jsonify({'msg':'User Successfully Created'})
+            response.status_code = 201
+            return response
+        except (Exception, psycopg2.DatabaseError) as error:
+            response = jsonify({'msg':'Problem fetching record from the database'})
+            response.status_code = 400
+            return response
