@@ -67,7 +67,7 @@ def create_app(config_name):
     api_endpoint.add_resource(LoginUsers, '/api/v2/auth/login')
 
     # Products Resource v2
-    api_endpoint.add_resource(NewProducts, '/api/v2/products')
+    api_endpoint.add_resource(NewProduct, '/api/v2/products')
 
     # Initializes flask_jwt_extended
     jwt = JWTManager(app)

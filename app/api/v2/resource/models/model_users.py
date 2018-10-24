@@ -18,7 +18,7 @@ class Users():
             return {'error': 'Fields cannot be empty'}, 401
         
         try:
-            get_user = "SELECT username, password, admin \
+            get_user = "SELECT username, password, admin, user_id \
                         FROM users \
                         WHERE username = '" + name + "' AND password = '" + password + "'"
             connection = db.db_connection()
@@ -26,7 +26,7 @@ class Users():
             cursor.execute(get_user)
             row = cursor.fetchone()
             if row is not None:                
-                access_token = create_access_token(identity={"username": row[0] , "admin": row[2]})
+                access_token = create_access_token(identity={"username": row[0] , "admin": row[2], "id": row[3]})
                 response = jsonify({"msg":"User Successfully logged in", "access_token":access_token})
                 response.status_code = 200
                 return response
