@@ -3,21 +3,18 @@ File to manage the connection to the database, creation and deletion of tables
 """
 import os
 import psycopg2
+from flask import current_app
 
-def db_connection(config=None):
+def db_connection():
     """Make a connection to the DB"""
-    if config == 'testing':
-        db_name = os.getenv('TEST_DB')
-    else:
-        db_name = os.getenv('DB_MAIN')
-    user = os.getenv('USER')
-    password = os.getenv('PASS')
-    host = os.getenv('HOST')
-    port = os.getenv('PORT')
-
-    return  psycopg2.connect(user=user, password=password, host=host, port=port, database=db_name)
+    db_path = current_app.config.get('DB_PATH')
+    try:
+        connection = psycopg2.connect(db_path)
+        return connection
+    except psycopg2.DatabaseError as e:
+        return {'error': '{}'.format(e)}
     
-def create_tables(cursor):
+def create_tables():
     """Create all tables"""
     statements = (
         """
@@ -47,33 +44,21 @@ def create_tables(cursor):
             PRIMARY KEY (product_id, sales_id, user_id)
         )
         """)
-
+    connection = db_connection()
+    cursor = connection.cursor()
     for statement in statements:
         cursor.execute(statement)
+        connection.commit()
 
-def drop_tables(cursor):
+def drop_tables():
     """Drops all tables"""
     drops = ["DROP TABLE users CASCADE",
-             "DROP TABLE orders CASCADE",
-             "DROP TABLE menus CASCADE",
-             "DROP TABLE status CASCADE"]
+             "DROP TABLE products CASCADE",
+             "DROP TABLE sales CASCADE"]
+
+    connection = db_connection()
+    cursor = connection.cursor()
     for drop in drops:
         cursor.execute(drop)
-    cursor.close()
-    connection.commit()
-
-def main(config=None):
-    """
-    This function is run in the command line to automate the connection to the database
-    and creation of tables in the database
-    """
-    connection = db_connection(config=config)
-    cursor = connection.cursor()
-    create_tables(cursor)
-    connection.commit()
-    cursor.close()
-    connection.close()
-
-if __name__ == '__main__':
-    main()
+        connection.commit()
 

@@ -21,8 +21,9 @@ def create_app(config_name):
     app.config.from_pyfile('config.py')
 
     # create tables in test and main DB
-    db.main()
-    db.main('testing')
+    with app.app_context():
+        db.db_connection()
+        db.create_tables()
 
     # Catch all 400 errors 
     @app.errorhandler(400)
