@@ -61,3 +61,12 @@ def drop_tables():
         cursor.execute(drop)
         connection.commit()
 
+def generate_admin():
+    """Generate the default admin and add to db"""
+    gen_admin = """INSERT INTO users (username, password, admin) 
+                   VALUES ('admin', 'passadmin', true) 
+                   ON CONFLICT (username) DO NOTHING"""
+    connection = db_connection()
+    cursor = connection.cursor()
+    cursor.execute(gen_admin)
+    connection.commit()

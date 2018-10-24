@@ -24,7 +24,8 @@ def create_app(config_name):
     with app.app_context():
         db.db_connection()
         db.create_tables()
-
+        db.generate_admin()
+        
     # Catch all 400 errors 
     @app.errorhandler(400)
     def bad_request_error(error):
