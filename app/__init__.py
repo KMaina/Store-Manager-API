@@ -11,6 +11,7 @@ from app.api.v1.resource.views.views_sales import MakeSale, GetSpecificSale
 
 # v2 imports
 from app.api.v2.resource.models import db
+from app.api.v2.resource.views.views_users import LoginUsers
 
 from instance.config import app_config
 
@@ -25,7 +26,7 @@ def create_app(config_name):
         db.db_connection()
         db.create_tables()
         db.generate_admin()
-        
+
     # Catch all 400 errors 
     @app.errorhandler(400)
     def bad_request_error(error):
@@ -47,19 +48,22 @@ def create_app(config_name):
     # Initialize flask_restful and add routes
     api_endpoint = Api(app)
     
-    # Users Resource
+    # Users Resource v1
     api_endpoint.add_resource(NewUsers, '/api/v1/auth/signup')
     api_endpoint.add_resource(GetAllUsers, '/api/v1/users')
     api_endpoint.add_resource(GetUser, '/api/v1/users/<int:user_id>')
     api_endpoint.add_resource(LoginUser, '/api/v1/auth/login')
 
-    # Products Resource
+    # Products Resource v1
     api_endpoint.add_resource(NewProducts, '/api/v1/products')
     api_endpoint.add_resource(GetProduct, '/api/v1/products/<int:product_id>')
 
-    # Sales Resource
+    # Sales Resource v1
     api_endpoint.add_resource(MakeSale, '/api/v1/sales')
     api_endpoint.add_resource(GetSpecificSale, '/api/v1/sales/<int:sale_id>')
+
+    # Users Resource v2
+    api_endpoint.add_resource(LoginUsers, '/api/v2/auth/login')
 
     # Initializes flask_jwt_extended
     jwt = JWTManager(app)
