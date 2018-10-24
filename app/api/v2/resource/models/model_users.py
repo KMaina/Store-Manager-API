@@ -16,7 +16,7 @@ class Users():
         # Check for empty inputs
         if name == '' or password == '':
             return {'error': 'Fields cannot be empty'}, 401
-        
+
         try:
             get_user = "SELECT username, password, admin, user_id \
                         FROM users \
