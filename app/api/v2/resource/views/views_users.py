@@ -16,7 +16,9 @@ class LoginUsers(Resource):
     """
     def post(self):
         """Route to handle creating users"""
-        args = parser.parse_args()
+        parser_copy = parser.copy()
+        parser_copy.remove_argument('confirm')
+        args = parser_copy.parse_args()
         return Users().login_user(
             args['name'],
             args['password'])
@@ -31,7 +33,7 @@ class RegisterUsers(Resource):
         """Route to handle creating users"""
         args = parser.parse_args()
         current_user = get_jwt_identity()
-        if current_user['admin'] == 'False':
+        if current_user['admin'] == False:
             return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
         return Users().reg_user(
             args['name'],
