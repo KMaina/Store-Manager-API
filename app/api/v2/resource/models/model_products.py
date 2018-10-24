@@ -85,7 +85,6 @@ class Products():
                                     reorder = '{}', 
                                     user_id='{}' 
                                 WHERE product_name = '{}'""".format(name, new_total, product_cost, reorder, userid, name)
-            print(modify_product)
             connection = db.db_connection()
             cursor = connection.cursor()
             cursor.execute(modify_product)
