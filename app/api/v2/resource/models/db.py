@@ -123,3 +123,21 @@ def get_db_id(table_name = None, column = None, data = None):
         return True
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
+
+def get_quantity_of_products(product):
+    """
+    Helper function to get the quantity of a product
+    Returns the quantity of the product
+    """
+    try:
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT quantity FROM products WHERE product_name = '{}'".format(product))
+        connection.commit()
+        product = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        if product: 
+            return product[0]
+    except (Exception, psycopg2.DatabaseError) as error:
+        return {'error' : '{}'.format(error)}, 400
