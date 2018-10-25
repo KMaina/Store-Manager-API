@@ -4,7 +4,7 @@ import os
 class Config:
     """Parent configuration class."""
     SECRET_KEY = os.getenv('SECRET_KEY')
-    DB_PATH = os.getenv('DB_DEV')
+    DATABASE_URL = os.getenv('DATABASE_URL')
 
 class DevelopmentConfig(Config):
     """Configurations for Development."""
@@ -14,7 +14,7 @@ class TestingConfig(Config):
     """Configurations for Testing"""
     TESTING = True
     DEBUG = True
-    DB_PATH = os.getenv('DB_TESTING')
+    DATABASE_URL = os.getenv('DB_TESTING')
 
 class StagingConfig(Config):
     """Configurations for Staging."""
