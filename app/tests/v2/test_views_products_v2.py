@@ -161,3 +161,39 @@ class UserTestCase(unittest.TestCase):
         print(response.data)
         self.assertEqual(response.status_code, 401)
         self.assertIn('Values cannot be less than 1', str(response.data))
+
+    def test_delete_a_product(self):
+        """Tests to delete a product from the db"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().delete('/api/v2/products/1', headers = {"Authorization":"Bearer " + access_token}, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Product Successfully Deleted', str(response.data))
+    
+    def test_delete_a_product_that_doesnt_exist(self):
+        """Tests to delete a product that does not exist"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().delete('/api/v2/products/2', headers = {"Authorization":"Bearer " + access_token}, content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('Product does not exist', str(response.data))
+    
+    def test_if_route_does_not_contain_integers(self):
+        """Tests to check if an integer is not contained in the route"""
+        response = self.client().post('/api/v2/auth/login', data=json.dumps(self.admin), content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        self.assertEqual(response.status_code, 200)
+        response = self.client().post('/api/v2/products', headers = {"Authorization":"Bearer " + access_token}, data=json.dumps(self.product1), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        response = self.client().delete('/api/v2/products/milk', headers = {"Authorization":"Bearer " + access_token}, content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('Page not found.', str(response.data))

@@ -105,6 +105,25 @@ def check_if_product_exists(name):
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
 
+def get_db_id(table_name = None, column = None, data = None):
+    """
+    Helper function to fetch an id from the db
+    Returns the id of a product if it exists
+    """
+    try:
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM {} WHERE {} = {}".format(table_name, column, data))
+        connection.commit()
+        get_id = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        if get_id == None:
+            return False
+        return True
+    except (Exception, psycopg2.DatabaseError) as error:
+        return {'error' : '{}'.format(error)}, 400
+
 def get_quantity_of_products(product):
     """
     Helper function to get the quantity of a product
@@ -118,7 +137,7 @@ def get_quantity_of_products(product):
         product = cursor.fetchone()
         cursor.close()
         connection.close()
-        if product:
+        if product: 
             return product[0]
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
