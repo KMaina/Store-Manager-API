@@ -17,7 +17,7 @@ class NewProduct(Resource):
     """
     @jwt_required
     def post(self):
-        """Route to handle creating users"""
+        """Route to handle creating products"""
         args = parser.parse_args()
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
@@ -27,12 +27,21 @@ class NewProduct(Resource):
             args['quantity'],
             args['product_cost'],
             args['reorder'])
-
+    
 class EditProducts(Resource):
     """
     Class to handle editing products
     PUT /api/v2/products/<int:productId> -> Creates a new products
+    DELETE /api/v2/products/<int:productId> -> Deletes a product
     """
+    @jwt_required
+    def delete(self, productId):
+        """Route to delete a product"""
+        current_user = get_jwt_identity()
+        if current_user['admin'] == False:
+            return {'msg':'Sorry, this route is only accessible to admins'}, 403
+        return Products().delete_product(productId)
+
     @jwt_required
     def put(self, productId):
         """Route to handle editing a product"""
