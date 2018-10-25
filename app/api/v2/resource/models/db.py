@@ -163,7 +163,7 @@ def get_price_of_products(product):
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
 
-def get_product_id(table_name = None, column = None, data = None):
+def get_product_id(table_name=None, column=None, data=None):
     """
     Helper function to fetch an id from the db
     Returns the id of a product if it exists

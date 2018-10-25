@@ -1,6 +1,5 @@
 """Views for the Sales Resource"""
 from flask_restful import Resource, reqparse
-from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.api.v2.resource.models.model_sales import Sales
