@@ -27,3 +27,21 @@ class NewProduct(Resource):
             args['quantity'],
             args['product_cost'],
             args['reorder'])
+
+class EditProducts(Resource):
+    """
+    Class to handle editing products
+    PUT /api/v2/products/<int:productId> -> Creates a new products
+    """
+    @jwt_required
+    def put(self, productId):
+        """Route to handle editing a product"""
+        args = parser.parse_args()
+        current_user = get_jwt_identity()
+        if current_user['admin'] == False:
+            return {'msg':'Sorry, this route is only accessible to admins'}, 403
+        return Products().edit_product(
+            args['name'],
+            args['quantity'],
+            args['product_cost'],
+            args['reorder'])
