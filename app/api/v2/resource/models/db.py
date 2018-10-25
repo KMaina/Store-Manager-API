@@ -144,3 +144,40 @@ def get_quantity_of_products(product):
             return product[0]
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
+
+def get_price_of_products(product):
+    """
+    Helper function to get the price of a product
+    Returns the price of the product
+    """
+    try:
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT product_cost FROM products WHERE product_name = '{}'".format(product))
+        connection.commit()
+        price = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        if price:
+            return price[0]
+    except (Exception, psycopg2.DatabaseError) as error:
+        return {'error' : '{}'.format(error)}, 400
+
+def get_product_id(table_name = None, column = None, data = None):
+    """
+    Helper function to fetch an id from the db
+    Returns the id of a product if it exists
+    """
+    try:
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM {} WHERE {} = '{}'".format(table_name, column, data))
+        connection.commit()
+        get_id = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        if get_id:
+            return get_id[0]
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return {'error' : '{}'.format(error)}, 400
