@@ -14,14 +14,14 @@ class Sales:
 
         current_user = get_jwt_identity()
 
-        # Check if a product exists
-        product_duplicate = db.check_if_product_exists(name)
-        if not product_duplicate:
-            return product_duplicate
-
         # Checks for empty fields
         if name == '' or quantity == '':
             return {'msg':'Fields cannot be empty'}, 401
+
+        # Check if a product exists
+        product_duplicate = db.check_if_product_exists(name)
+        if not product_duplicate:
+            return {'msg':'Product does not exist'}, 404
 
         # Checks for values less than 1
         if quantity < 1:
@@ -52,6 +52,7 @@ class Sales:
             connection.commit()
             response = jsonify({'msg':'Sale Successfully Created'})
             response.status_code = 201
+            print(response.data)
             return response
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)

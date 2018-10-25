@@ -14,16 +14,22 @@ class SalesTestCase(unittest.TestCase):
         self.admin = {"name":"admin","password":"passadmin"}
         self.reg_user = {"name":"Ken Maina", "password":"mysecret", "confirm":"mysecret"}
         self.login_user = {"name":"Ken Maina", "password":"mysecret"}
-        self.product = {"name":"eggs", "quantity":30, "product_cost":30, "reorder":20}
-        self.sale = {"name":"eggs", "quantity":20}
-        self.sale1 = {"name":"eggs", "quantity":50}
-        self.sale2 = {"name":"eggs"}
+        self.product = {"name":"milk", "quantity":30, "product_cost":30, "reorder":20}
+        self.sale = {"name":"milk", "quantity":10}
+        self.sale1 = {"name":"milk", "quantity":50}
+        self.sale2 = {"name":"milk"}
         self.sale3 = {"name":"", "quantity":50}
     
         with self.app.app_context():
             db.db_connection()
             db.create_tables()
             db.generate_admin()
+        
+    def tearDown(self):
+        """Drops all tables after tests are done"""
+        with self.app.app_context():
+            db.db_connection()
+            db.drop_tables()
     
     def test_create_sale_record(self):
         """Test to successfully create a new sale record"""
@@ -39,8 +45,9 @@ class SalesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
         response = self.client().post('api/v2/sales', headers = {"Authorization":"Bearer " + access_token_user}, data=json.dumps(self.sale), content_type='application/json')
+        print(response.data)
         self.assertEqual(response.status_code, 201)
-        self.assertIn('Product Successfully Created', str(response.data))
+        self.assertIn('Sale Successfully Created', str(response.data))
     
     def test_create_sale_as_admin(self):
         """Test to create a new sale record as an admin"""
@@ -83,6 +90,7 @@ class SalesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
         response = self.client().post('api/v2/sales', headers = {"Authorization":"Bearer " + access_token_user}, data=json.dumps(self.sale1), content_type='application/json')
+        print(response.data)              
         self.assertEqual(response.status_code, 401)
         self.assertIn('Quantity order is more than that in stock', str(response.data))
     
@@ -117,5 +125,6 @@ class SalesTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
         response = self.client().post('api/v2/sales', headers = {"Authorization":"Bearer " + access_token_user}, data=json.dumps(self.sale3), content_type='application/json')
+        print(response.data)
         self.assertEqual(response.status_code, 401)
         self.assertIn('Fields cannot be empty', str(response.data))

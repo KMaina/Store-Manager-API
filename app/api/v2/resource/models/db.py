@@ -101,8 +101,7 @@ def check_if_product_exists(name):
         cursor.close()
         connection.close()
         if product:
-            return product
-            # return {'msg' : 'Product already exists'}, 401
+            return {'msg' : 'Product already exists'}, 401
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
 

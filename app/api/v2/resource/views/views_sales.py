@@ -7,7 +7,7 @@ from app.api.v2.resource.models.model_sales import Sales
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser.add_argument('name', help="You must supply a product name", required='True')
-parser.add_argument('quantity', help="You must supply the opening stock amount", required='True', type='int')
+parser.add_argument('quantity', help="You must supply the quantity of the sale", required='True', type='int')
 
 class MakeSales(Resource):
     """
