@@ -73,7 +73,7 @@ def create_app(config_name):
     api_endpoint.add_resource(EditProducts, '/api/v2/products/<int:productId>')
 
     # Sales Resource v2
-    api_endpoint.add_resource(MakeSales, '/api/v1/sales')
+    api_endpoint.add_resource(MakeSales, '/api/v2/sales')
 
     # Initializes flask_jwt_extended
     jwt = JWTManager(app)
