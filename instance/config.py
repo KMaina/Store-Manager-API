@@ -1,7 +1,7 @@
 """The configuration for the app"""
 import os
 
-class Config(object):
+class Config:
     """Parent configuration class."""
     SECRET_KEY = os.getenv('SECRET_KEY')
     DB_PATH = os.getenv('DB_DEV')
@@ -31,4 +31,3 @@ app_config = {
     'staging': StagingConfig,
     'production': ProductionConfig,
 }
-

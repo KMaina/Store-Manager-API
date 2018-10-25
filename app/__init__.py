@@ -28,19 +28,19 @@ def create_app(config_name):
         db.create_tables()
         db.generate_admin()
 
-    # Catch all 400 errors 
+    # Catch all 400 errors
     @app.errorhandler(400)
     def bad_request_error(error):
         """400 error handler."""
         return jsonify({"error": "A bad request was sent to the server."}), 400
 
-    # Catch all 404 errors 
+    # Catch all 404 errors
     @app.errorhandler(404)
     def not_found_error(error):
         """404 error handler."""
         return jsonify({"error": "Page not found."}), 404
-    
-    # Catch all 500 errors 
+
+    # Catch all 500 errors
     @app.errorhandler(500)
     def internal_server_error(error):
         """500 error handler."""
@@ -48,7 +48,7 @@ def create_app(config_name):
 
     # Initialize flask_restful and add routes
     api_endpoint = Api(app)
-    
+
     # Users Resource v1
     api_endpoint.add_resource(NewUsers, '/api/v1/auth/signup')
     api_endpoint.add_resource(GetAllUsers, '/api/v1/users')

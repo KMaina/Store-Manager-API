@@ -12,7 +12,7 @@ class Users():
         """Logs in a user"""
         name = request.json.get('name', None)
         password = request.json.get('password', None)
-        
+
         # Check for empty inputs
         if name == '' or password == '':
             return {'error': 'Fields cannot be empty'}, 401
@@ -25,8 +25,8 @@ class Users():
             cursor = connection.cursor()
             cursor.execute(get_user)
             row = cursor.fetchone()
-            if row is not None:                
-                access_token = create_access_token(identity={"username": row[0] , "admin": row[2], "id": row[3]})
+            if row is not None:
+                access_token = create_access_token(identity={"username": row[0], "admin": row[2], "id": row[3]})
                 response = jsonify({"msg":"User Successfully logged in", "access_token":access_token})
                 response.status_code = 200
                 return response
@@ -37,7 +37,7 @@ class Users():
             response = jsonify({'msg':'Problem fetching record from the database'})
             response.status_code = 400
             return response
-    
+
     def reg_user(self, name, password, confirm):
         """Method to handle user creation"""
         name = request.json.get('name', None)
@@ -47,7 +47,7 @@ class Users():
         # Check for empty inputs
         if name == '' or password == '' or confirm == '':
             return {'error': 'Fields cannot be empty'}, 401
-        
+
         if password != confirm:
             return {'msg':"Passwords do not match"}, 401
 

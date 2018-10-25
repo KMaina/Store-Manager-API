@@ -1,6 +1,4 @@
-"""
-File to manage the connection to the database, creation and deletion of tables
-"""
+"""File to manage the connection to the database, creation and deletion of tables"""
 import psycopg2
 from flask import current_app
 
@@ -12,7 +10,7 @@ def db_connection():
         return connection
     except psycopg2.DatabaseError as e:
         return {'error': '{}'.format(e)}
-    
+
 def create_tables():
     """Create all tables"""
     statements = (
@@ -63,12 +61,17 @@ def drop_tables():
 
 def generate_admin():
     """Generate the default admin and add to db"""
-    gen_admin = "INSERT INTO users (username, password, admin) VALUES ('admin', 'passadmin', true) ON CONFLICT (username) DO NOTHING"
+    gen_admin = """
+                INSERT INTO
+                users (username, password, admin)
+                VALUES ('admin', 'passadmin', true)
+                ON CONFLICT (username) DO NOTHING
+                """
     connection = db_connection()
     cursor = connection.cursor()
     cursor.execute(gen_admin)
     connection.commit()
-    
+
 def check_if_user_exists(name):
     """
     Helper function to check if a user exists
@@ -105,7 +108,7 @@ def check_if_product_exists(name):
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
 
-def get_db_id(table_name = None, column = None, data = None):
+def get_db_id(table_name=None, column=None, data=None):
     """
     Helper function to fetch an id from the db
     Returns the id of a product if it exists
@@ -137,7 +140,7 @@ def get_quantity_of_products(product):
         product = cursor.fetchone()
         cursor.close()
         connection.close()
-        if product: 
+        if product:
             return product[0]
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
