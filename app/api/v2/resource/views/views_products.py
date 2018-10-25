@@ -27,3 +27,11 @@ class NewProduct(Resource):
             args['quantity'],
             args['product_cost'],
             args['reorder'])
+    
+class EditProducts(Resource):
+    """
+    Class to handle editing products
+    DELETE /api/v2/products/<int:productId> -> Deletes a product
+    """
+    def delete(self, productId):
+        return Products().delete_product(productId)
