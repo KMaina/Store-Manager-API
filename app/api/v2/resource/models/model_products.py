@@ -46,3 +46,25 @@ class Products():
             response = jsonify({'msg':'Problem inserting record into the database'})
             response.status_code = 400
             return response
+    
+    def delete_product(self, productId):
+        """Method to delete a product"""
+
+        # Check if the product exists
+        id = db.get_db_id(table_name = 'products', column = 'product_id', data = productId)
+        if id == False:
+            return {'msg':'Product does not exist'}, 404
+        
+        try:
+            product_delete = "delete from products where product_id = {}".format(productId)
+            connection = db.db_connection()
+            cursor = connection.cursor()
+            cursor.execute(product_delete)
+            connection.commit()
+            response = jsonify({'msg':'Product Successfully Deleted'})
+            response.status_code = 200
+            return response
+        except (Exception, psycopg2.DatabaseError) as error:
+            response = jsonify({'msg':'Problem inserting record into the database'})
+            response.status_code = 400
+            return response

@@ -104,3 +104,22 @@ def check_if_product_exists(name):
             return {'msg' : 'Product already exists'}, 401
     except (Exception, psycopg2.DatabaseError) as error:
         return {'error' : '{}'.format(error)}, 400
+
+def get_db_id(table_name = None, column = None, data = None):
+    """
+    Helper function to fetch an id from the db
+    Returns the id of a product if it exists
+    """
+    try:
+        connection = db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM {} WHERE {} = {}".format(table_name, column, data))
+        connection.commit()
+        get_id = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        if get_id == None:
+            return False
+        return True
+    except (Exception, psycopg2.DatabaseError) as error:
+        return {'error' : '{}'.format(error)}, 400
