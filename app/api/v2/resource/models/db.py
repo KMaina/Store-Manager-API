@@ -4,7 +4,7 @@ from flask import current_app
 
 def db_connection():
     """Make a connection to the DB"""
-    db_path = current_app.config.get('DB_PATH')
+    db_path = current_app.config.get('DATABASE_URL')
     try:
         connection = psycopg2.connect(db_path)
         return connection
