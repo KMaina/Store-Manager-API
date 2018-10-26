@@ -37,8 +37,16 @@ set SECRET_KEY=verysecret #change-this!
 
 
 ## Example Usage
+- In Postman, add the address `127.0.0.1:5000/api/v1/auth/login` to the `POST` method
+- Add the JSON body to login into the app
+```
+{
+  "name":"admin",
+  "password":"passadmin"
+}
+```
 - In Postman, add the address `127.0.0.1:5000/api/v1/auth/signup` to the `POST` method
-- Add a JSON body to register into the app
+- Add a JSON body to register into the app and grab the token from the login.
 ```
 {
   "name":"Ken Maina",
@@ -46,9 +54,8 @@ set SECRET_KEY=verysecret #change-this!
   "confirm":"mysecret"
 }
 ```
-- Hit the send button and get the response `{'msg':"User Successfully created"}`
 - To add a product, add `127.0.0.1:5000/api/v1/products` to the `POST` method
-use the following JSON body
+- Use the following JSON body
 ```
 {
   "name":"eggs",
@@ -57,7 +64,27 @@ use the following JSON body
   "reorder":10
 }
 ```
-- Hit the send button and get the response `{'msg':"Product Successfully created"}`
+- To edit a product, add `127.0.0.1:5000/api/v1/products/<int:productId>` to the `PUT` method
+```
+{
+  "name":"eggs",
+  "quantity":50,
+  "price":20,
+  "reorder":10
+}
+```
+- To delete a product, add `127.0.0.1:5000/api/v1/products/<int:productId>` to the `DELETE` method
+- To create a product, add `127.0.0.1:5000/api/v1/sales` to the `POST` method
+- Use the following JSON body
+```
+{
+  "name":"eggs",
+  "quantity":50
+}
+```
+## Release History
+* Version 2 - Store Manager API with database persistence using POSTGREsql
+* Version 1 - Store Manager API with memory persistence
 ## Meta
 Ken Maina - maina.ken0@gmail.com
 https://github.com/KMaina

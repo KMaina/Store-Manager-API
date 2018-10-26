@@ -1,6 +1,6 @@
 """Initializes the flask app"""
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
@@ -77,5 +77,9 @@ def create_app(config_name):
 
     # Initializes flask_jwt_extended
     jwt = JWTManager(app)
+
+    @app.route('/')
+    def root():
+        return redirect('https://documenter.getpostman.com/view/4157501/RWgxvvVE')
 
     return app
