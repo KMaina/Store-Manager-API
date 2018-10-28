@@ -11,7 +11,7 @@ from app.api.v1.resource.views.views_sales import MakeSale, GetSpecificSale
 
 # v2 imports
 from app.api.v2.resource.models import db
-from app.api.v2.resource.views.views_users import LoginUsers, RegisterUsers, GetAllUser
+from app.api.v2.resource.views.views_users import LoginUsers, RegisterUsers, GetAllUser, GetUsers
 from app.api.v2.resource.views.views_products import NewProduct, EditProducts
 from app.api.v2.resource.views.views_sales import MakeSales
 
@@ -68,6 +68,7 @@ def create_app(config_name):
     api_endpoint.add_resource(LoginUsers, '/api/v2/auth/login')
     api_endpoint.add_resource(RegisterUsers, '/api/v2/auth/signup')
     api_endpoint.add_resource(GetAllUser, '/api/v2/users')
+    api_endpoint.add_resource(GetUser, '/api/v2/users/<int:userId>')
 
     # Products Resource v2
     api_endpoint.add_resource(NewProduct, '/api/v2/products')
