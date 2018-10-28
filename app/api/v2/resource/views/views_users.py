@@ -65,9 +65,9 @@ class GetUsers(Resource):
     POST /api/v2/user/<int:userId> -> Get all users
     """
     @jwt_required
-    current_user = get_jwt_identity()
-    if current_user['admin'] == False:
-        return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
     def get(self, userId):
         """Route to get all users"""
+        current_user = get_jwt_identity()
+        if current_user['admin'] == False:
+            return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
         return Users().get_one_user(userId)

@@ -99,3 +99,26 @@ class Users():
             response = jsonify({'msg':'Problem fetching record from the database'})
             response.status_code = 400
             return response
+
+    def get_one_user(self, userId):
+        """Method to get one user"""
+        try:
+            get_user = "SELECT * FROM USERS where user_id = {}".format(userId)
+            connection = db.db_connection()
+            cursor = connection.cursor()
+            cursor.execute(get_user)
+            user = cursor.fetchone()
+            if user is None:
+                return {'msg':'User not found'}, 404
+            if user:
+                users_dict = {
+                    "user_id" : user[0],
+                    "username" : user[1],
+                    "admin" : user[3]
+                }
+                return {'users' : users_dict}, 200
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            response = jsonify({'msg':'Problem fetching record from the database'})
+            response.status_code = 400
+            return response

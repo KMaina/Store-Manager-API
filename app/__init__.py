@@ -68,7 +68,7 @@ def create_app(config_name):
     api_endpoint.add_resource(LoginUsers, '/api/v2/auth/login')
     api_endpoint.add_resource(RegisterUsers, '/api/v2/auth/signup')
     api_endpoint.add_resource(GetAllUser, '/api/v2/users')
-    api_endpoint.add_resource(GetUser, '/api/v2/users/<int:userId>')
+    api_endpoint.add_resource(GetUsers, '/api/v2/users/<int:userId>')
 
     # Products Resource v2
     api_endpoint.add_resource(NewProduct, '/api/v2/products')
