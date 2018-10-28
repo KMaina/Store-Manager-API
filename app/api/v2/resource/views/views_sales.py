@@ -28,4 +28,7 @@ class MakeSales(Resource):
     @jwt_required
     def get(self):
         """Route to handle fetching all sales"""
+        current_user = get_jwt_identity()
+        if current_user['admin'] == True:
+            return {'msg':'Sorry, this route is only accessible to admins'}, 403
         return Sales().get_all_sales()
