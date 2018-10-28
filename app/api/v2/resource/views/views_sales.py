@@ -24,3 +24,8 @@ class MakeSales(Resource):
         return Sales().add_sale(
             args['name'],
             args['quantity'])
+
+    @jwt_required
+    def get(self):
+        """Route to handle fetching all sales"""
+        return Sales().get_all_sales()
