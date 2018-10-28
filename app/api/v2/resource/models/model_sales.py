@@ -63,3 +63,35 @@ class Sales:
             response = jsonify({'msg':'Problem inserting record into the database'})
             response.status_code = 400
             return response
+
+    def get_all_sales(self):
+        """Method to fetch all sales"""
+        try:
+            all_sales = """select sales_id, products.product_id, product_name, totat_cost, username
+                           from products inner join 
+                           sales on sales.product_id=products.product_id 
+                           inner join users on users.user_id=sales.user_id"""
+            connection = db.db_connection()
+            cursor = connection.cursor()
+            cursor.execute(all_sales)
+            sales = cursor.fetchall()
+            print(sales)
+            sales_list = []
+            if sales is None:
+                return {'msg':'No sales found'}, 200
+            if sales:
+                for sale in sales:
+                    sales_dict = {
+                        "sales_id" : sale[0],
+                        "product_id" : sale[1],
+                        "product_name" : sale[2],
+                        "total_cost" : sale[3],
+                        "username" : sale[4]
+                    }
+                    sales_list.append(sales_dict)
+            return {'users' : sales_list}, 200
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            response = jsonify({'msg':'Problem fetching record from the database'})
+            response.status_code = 400
+            return response
