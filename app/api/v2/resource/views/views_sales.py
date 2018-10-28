@@ -34,6 +34,7 @@ class MakeSales(Resource):
         return Sales().get_all_sales()
 
 class GetSale(Resource):
+    """Class to fetch a single sale"""
     @jwt_required
     def get(self, saleId):
         """Route to handle fetching a single sale"""
