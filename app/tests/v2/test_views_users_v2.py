@@ -199,4 +199,4 @@ class UserTestCase(unittest.TestCase):
                                       headers={"Authorization":"Bearer " + access_token},
                                       content_type='application/json')
         self.assertEqual(response.status_code, 403)
-        self.assertIn('Sorry, this route is only accessible to admins', str(response.data))
+        self.assertIn('Sorry, only admins are allowed to access this route', str(response.data))
