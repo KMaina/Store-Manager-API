@@ -67,7 +67,7 @@ class Sales:
     def get_all_sales(self):
         """Method to fetch all sales"""
         try:
-            all_sales = """select sales_id, products.product_id, product_name, product_cost, username
+            all_sales = """select sales_id, products.product_id, product_name, totat_cost, username
                            from products inner join 
                            sales on sales.product_id=products.product_id 
                            inner join users on users.user_id=sales.user_id"""
@@ -85,7 +85,7 @@ class Sales:
                         "sales_id" : sale[0],
                         "product_id" : sale[1],
                         "product_name" : sale[2],
-                        "product_cost" : sale[3],
+                        "total_cost" : sale[3],
                         "username" : sale[4]
                     }
                     sales_list.append(sales_dict)
