@@ -45,3 +45,29 @@ class RegisterUsers(Resource):
             args['name'],
             args['password'],
             args['confirm'])
+
+class GetAllUser(Resource):
+    """
+    Class to handle getting users
+    POST /api/v2/users -> Get all users
+    """
+    @jwt_required
+    def get(self):
+        """Route to get all users"""
+        current_user = get_jwt_identity()
+        if current_user['admin'] == False:
+            return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
+        return Users().get_all_users()
+
+class GetUsers(Resource):
+    """
+    Class to handle getting one user
+    POST /api/v2/user/<int:userId> -> Get all users
+    """
+    @jwt_required
+    def get(self, userId):
+        """Route to get all users"""
+        current_user = get_jwt_identity()
+        if current_user['admin'] == False:
+            return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
+        return Users().get_one_user(userId)

@@ -120,3 +120,61 @@ class Products():
             response = jsonify({'msg':'Problem inserting record into the database'})
             response.status_code = 400
             return response
+
+    def get_all_products(self):
+        """Method to get all products"""
+        try:
+            all_products = "select product_id, product_name, quantity, product_cost, reorder, username from users inner join products on products.user_id=users.user_id"
+            connection = db.db_connection()
+            cursor = connection.cursor()
+            cursor.execute(all_products)
+            products = cursor.fetchall()
+            products_list = []
+            if products is None:
+                return {'msg':'No products found'}, 404
+            if products:
+                for product in products:
+                    products_dict = {
+                        "product_id" : product[0],
+                        "product_name" : product[1],
+                        "quantity" : product[2],
+                        "product_cost" : product[3],
+                        "reorder" : product[4],
+                        "username" : product[5]
+                    }
+                    products_list.append(products_dict)
+            return {'users' : products_list}, 200
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            response = jsonify({'msg':'Problem fetching record from the database'})
+            response.status_code = 400
+            return response
+    
+    def get_one_product(self, productId):
+        """Method to get all products"""
+        try:
+            all_products = """select product_id, product_name, quantity, product_cost, reorder, username 
+                              from users 
+                              inner join products 
+                              on products.user_id=users.user_id WHERE product_id={}""".format(productId)
+            connection = db.db_connection()
+            cursor = connection.cursor()
+            cursor.execute(all_products)
+            product = cursor.fetchone()
+            if product is None:
+                return {'msg':'No products found'}, 404
+            if product:
+                product_dict = {
+                    "product_id" : product[0],
+                    "product_name" : product[1],
+                    "quantity" : product[2],
+                    "product_cost" : product[3],
+                    "reorder" : product[4],
+                    "username" : product[5]
+                }
+                return {'users' : product_dict}, 200
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+            response = jsonify({'msg':'Problem fetching record from the database'})
+            response.status_code = 400
+            return response

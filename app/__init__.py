@@ -11,9 +11,9 @@ from app.api.v1.resource.views.views_sales import MakeSale, GetSpecificSale
 
 # v2 imports
 from app.api.v2.resource.models import db
-from app.api.v2.resource.views.views_users import LoginUsers, RegisterUsers
+from app.api.v2.resource.views.views_users import LoginUsers, RegisterUsers, GetAllUser, GetUsers
 from app.api.v2.resource.views.views_products import NewProduct, EditProducts
-from app.api.v2.resource.views.views_sales import MakeSales
+from app.api.v2.resource.views.views_sales import MakeSales, GetSale
 
 from instance.config import app_config
 
@@ -67,6 +67,8 @@ def create_app(config_name):
     # Users Resource v2
     api_endpoint.add_resource(LoginUsers, '/api/v2/auth/login')
     api_endpoint.add_resource(RegisterUsers, '/api/v2/auth/signup')
+    api_endpoint.add_resource(GetAllUser, '/api/v2/users')
+    api_endpoint.add_resource(GetUsers, '/api/v2/users/<int:userId>')
 
     # Products Resource v2
     api_endpoint.add_resource(NewProduct, '/api/v2/products')
@@ -74,6 +76,7 @@ def create_app(config_name):
 
     # Sales Resource v2
     api_endpoint.add_resource(MakeSales, '/api/v2/sales')
+    api_endpoint.add_resource(GetSale, '/api/v2/sales/<int:saleId>')
 
     # Initializes flask_jwt_extended
     jwt = JWTManager(app)

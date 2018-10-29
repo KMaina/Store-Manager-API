@@ -15,6 +15,7 @@ class UserTestCase(unittest.TestCase):
         self.user2 = {"name" : "John Smith", "confirm" : "mysecret"}
         self.user3 = {"name" : "John Smith", "password" : "", "confirm" : "mysecret"}
         self.user4 = {"name" : "John Smith", "password" : "pass", "confirm" : "pass"}
+        self.admin = {"name":"admin", "password":"passadmin"}
 
         with self.app.app_context():
             db.db_connection()
@@ -29,11 +30,9 @@ class UserTestCase(unittest.TestCase):
 
     def test_user_login(self):
         """Successfully log into the app"""
-        response = self.client().post('/api/v2/auth/login', data=json.dumps({
-            "name":"admin",
-            "password":"passadmin"
-        }), content_type='application/json')
-
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps(self.admin),
+                                      content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertIn('User Successfully logged in', str(response.data))
 
@@ -48,7 +47,7 @@ class UserTestCase(unittest.TestCase):
     def test_empty_credentials(self):
         """Test for empty values"""
         response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps({"name":"", "password":"mypass"}),
+                                      data=json.dumps({"name":"", "password":"passadmin"}),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 401)
         self.assertIn('Fields cannot be empty', str(response.data))
@@ -64,7 +63,7 @@ class UserTestCase(unittest.TestCase):
     def test_user_register(self):
         """Test to successfuly register a new user"""
         response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps({"name":"admin", "password":"passadmin"}),
+                                      data=json.dumps(self.admin),
                                       content_type='application/json')
         json_data = json.loads(response.data)
         access_token = json_data.get('access_token')
@@ -79,7 +78,7 @@ class UserTestCase(unittest.TestCase):
     def test_register_with_empty_inputs(self):
         """Test to create a user with empty inputs"""
         response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps({"name":"admin", "password":"passadmin"}),
+                                      data=json.dumps(self.admin),
                                       content_type='application/json')
         json_data = json.loads(response.data)
         access_token = json_data.get('access_token')
@@ -94,7 +93,7 @@ class UserTestCase(unittest.TestCase):
     def test_register_user_as_non_admin(self):
         """Test to register a new user as a non admin"""
         response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps({"name":"admin", "password":"passadmin"}),
+                                      data=json.dumps(self.admin),
                                       content_type='application/json')
         json_data = json.loads(response.data)
         access_token = json_data.get('access_token')
@@ -119,7 +118,7 @@ class UserTestCase(unittest.TestCase):
     def test_user_register_empty_fields(self):
         """Test to register a new user with empty inputs"""
         response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps({"name":"admin", "password":"passadmin"}),
+                                      data=json.dumps(self.admin),
                                       content_type='application/json')
         json_data = json.loads(response.data)
         access_token = json_data.get('access_token')
@@ -134,7 +133,7 @@ class UserTestCase(unittest.TestCase):
     def test_user_register_illegal_passwords(self):
         """Test to register a new user with illegal inputs"""
         response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps({"name":"admin", "password":"passadmin"}),
+                                      data=json.dumps(self.admin),
                                       content_type='application/json')
         json_data = json.loads(response.data)
         access_token = json_data.get('access_token')
@@ -149,7 +148,7 @@ class UserTestCase(unittest.TestCase):
     def test_user_register_twice(self):
         """Test to register an existing user"""
         response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps({"name":"admin", "password":"passadmin"}),
+                                      data=json.dumps(self.admin),
                                       content_type='application/json')
         json_data = json.loads(response.data)
         access_token = json_data.get('access_token')
@@ -165,3 +164,86 @@ class UserTestCase(unittest.TestCase):
                                       content_type='application/json')
         self.assertEqual(response.status_code, 401)
         self.assertIn('User already exists', str(response.data))
+
+    def test_get_all_users(self):
+        """Test to successfully fetch all users"""
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps(self.admin),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        response = self.client().get('api/v2/users',
+                                      headers={"Authorization":"Bearer " + access_token},
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('admin', str(response.data))
+    
+    def test_get_all_users_as_non_admin(self):
+        """Tests to get all users as a non admin"""
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps(self.admin),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        response = self.client().post('/api/v2/auth/signup',
+                                      headers={"Authorization":"Bearer " + access_token},
+                                      data=json.dumps(self.user),
+                                      content_type='application/json')
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps({"name":"Ken Maina", "password":"mysecret"}),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        response = self.client().get('api/v2/users',
+                                      headers={"Authorization":"Bearer " + access_token},
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.assertIn('Sorry, only admins are allowed to access this route', str(response.data))
+    
+    def test_get_single_user(self):
+        """Test to successfully fetch a single user"""
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps(self.admin),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        response = self.client().get('api/v2/users/1',
+                                      headers={"Authorization":"Bearer " + access_token},
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('admin', str(response.data))
+    
+    def test_get_single_user_as_non_admin(self):
+        """Test to fetch a single user as a non admin"""
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps(self.admin),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        response = self.client().post('/api/v2/auth/signup',
+                                      headers={"Authorization":"Bearer " + access_token},
+                                      data=json.dumps(self.user),
+                                      content_type='application/json')
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps({"name":"Ken Maina", "password":"mysecret"}),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        response = self.client().get('api/v2/users/1',
+                                      headers={"Authorization":"Bearer " + access_token},
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.assertIn('Sorry, only admins are allowed to access this route', str(response.data))
+    
+    def test_get_non_existent_user(self):
+        """Test to get a user that does not exist"""
+        response = self.client().post('/api/v2/auth/login',
+                                      data=json.dumps(self.admin),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        response = self.client().get('api/v2/users/100',
+                                      headers={"Authorization":"Bearer " + access_token},
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('User not found', str(response.data))

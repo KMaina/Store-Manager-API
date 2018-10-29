@@ -36,6 +36,10 @@ class NewProduct(Resource):
             args['quantity'],
             args['product_cost'],
             args['reorder'])
+    
+    def get(self):
+        """Route to get all products"""
+        return Products().get_all_products()
 
 class EditProducts(Resource):
     """
@@ -63,3 +67,8 @@ class EditProducts(Resource):
             args['quantity'],
             args['product_cost'],
             args['reorder'])
+
+    @jwt_required
+    def get(self, productId):
+        """Route to handle fetching a single product"""
+        return Products().get_one_product(productId)
