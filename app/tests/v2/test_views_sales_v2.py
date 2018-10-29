@@ -19,6 +19,9 @@ class SalesTestCase(unittest.TestCase):
         self.sale1 = {"name":"milk", "quantity":50}
         self.sale2 = {"name":"milk"}
         self.sale3 = {"name":"", "quantity":50}
+        self.route_login = '/api/v2/auth/login'
+        self.route_products = '/api/v2/products'
+        self.route_sales = '/api/v2/sales'
 
         with self.app.app_context():
             db.db_connection()
@@ -33,29 +36,18 @@ class SalesTestCase(unittest.TestCase):
 
     def test_create_sale_record(self):
         """Test to successfully create a new sale record"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
@@ -63,20 +55,14 @@ class SalesTestCase(unittest.TestCase):
 
     def test_create_sale_as_admin(self):
         """Test to create a new sale record as an admin"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.sale),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 403)
@@ -84,23 +70,12 @@ class SalesTestCase(unittest.TestCase):
 
     def test_create_sale_record_for_non_existing_product(self):
         """Test to create a sale record for peoducts not in the database"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 404)
@@ -108,29 +83,18 @@ class SalesTestCase(unittest.TestCase):
 
     def test_create_sale_record_if_quantity_is_more_than_in_stock(self):
         """Test to create a sale record if the ordered quantity is larger than that in stock"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale1),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 401)
@@ -138,29 +102,18 @@ class SalesTestCase(unittest.TestCase):
 
     def test_create_sale_record_if_values_are_missing(self):
         """Test to create a sale record if the ordered quantity is larger than that in stock"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale2),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 400)
@@ -168,29 +121,18 @@ class SalesTestCase(unittest.TestCase):
 
     def test_create_sale_record_if_inputs_are_empty(self):
         """Test to create a sale record if the inputs are empty"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale3),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 401)
@@ -198,112 +140,91 @@ class SalesTestCase(unittest.TestCase):
 
     def test_to_get_all_sales(self):
         """Test to successfully fetch all sales"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        response = self.client().get('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().get(self.route_sales,
+                                      headers=self.generate_admin_token(),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
     def test_to_get_all_sales_as_non_admins(self):
         """Test to fetch all sales as a non admin"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        response = self.client().get('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().get(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 403)
 
     def test_to_get_sales_if_non_is_generated(self):
         """Test to fetch sales if no sale has been generated yet"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
-        response = self.client().get('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().get(self.route_sales,
+                                      headers=self.generate_admin_token(),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
     def test_to_get_one_sales(self):
         """Test to successfully fetch a single sale"""
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.admin),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_admin = json_data.get('access_token')
-        self.assertEqual(response.status_code, 200)
         response = self.client().post('/api/v2/auth/signup',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.reg_user),
                                       content_type='application/json')
-        response = self.client().post('/api/v2/auth/login',
-                                      data=json.dumps(self.login_user),
-                                      content_type='application/json')
-        json_data = json.loads(response.data)
-        access_token_user = json_data.get('access_token')
-        response = self.client().post('/api/v2/products',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().post(self.route_products,
+                                      headers=self.generate_admin_token(),
                                       data=json.dumps(self.product),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertIn('Product Successfully Created', str(response.data))
-        response = self.client().post('api/v2/sales',
-                                      headers={"Authorization":"Bearer " + access_token_user},
+        response = self.client().post(self.route_sales,
+                                      headers=self.generate_user_token(),
                                       data=json.dumps(self.sale),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        response = self.client().get('api/v2/sales/1',
-                                      headers={"Authorization":"Bearer " + access_token_admin},
+        response = self.client().get(self.route_sales + '/1',
+                                      headers=self.generate_admin_token(),
                                       content_type='application/json')
         self.assertEqual(response.status_code, 200)
+
+    def generate_admin_token(self):
+        response = self.client().post(self.route_login,
+                                      data=json.dumps(self.admin),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        headers = {"Authorization":"Bearer " + access_token}
+        return headers
+
+    def generate_user_token(self):
+        response = self.client().post(self.route_login,
+                                      data=json.dumps(self.login_user),
+                                      content_type='application/json')
+        json_data = json.loads(response.data)
+        access_token = json_data.get('access_token')
+        headers = {"Authorization":"Bearer " + access_token}
+        return headers
