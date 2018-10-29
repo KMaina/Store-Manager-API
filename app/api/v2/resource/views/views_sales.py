@@ -32,3 +32,10 @@ class MakeSales(Resource):
         if current_user['admin'] == False:
             return {'msg':'Sorry, this route is only accessible to admins'}, 403
         return Sales().get_all_sales()
+
+class GetSale(Resource):
+    """Class to fetch a single sale"""
+    @jwt_required
+    def get(self, saleId):
+        """Route to handle fetching a single sale"""
+        return Sales().get_one_sale(saleId)
