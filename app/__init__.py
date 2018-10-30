@@ -3,6 +3,7 @@ import os
 from flask import Flask, jsonify, redirect
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 # v1 imports
 from app.api.v1.resource.views.views_users import NewUsers, GetAllUsers, GetUser, LoginUser
@@ -80,6 +81,9 @@ def create_app(config_name):
 
     # Initializes flask_jwt_extended
     jwt = JWTManager(app)
+
+    # Add CORS to handle Access-Control-Allow-Origin issues
+    CORS(app)
 
     @app.route('/')
     def root():
