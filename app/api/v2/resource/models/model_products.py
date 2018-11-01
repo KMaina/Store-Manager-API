@@ -63,7 +63,7 @@ class Products():
             cursor = connection.cursor()
             cursor.execute(product_delete)
             connection.commit()
-            response = jsonify({'mssuccessg':'Product Successfully Deleted'})
+            response = jsonify({'success':'Product Successfully Deleted'})
             response.status_code = 200
             return response
         except (Exception, psycopg2.DatabaseError) as error:
