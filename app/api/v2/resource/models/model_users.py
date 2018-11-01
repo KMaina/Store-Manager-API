@@ -27,14 +27,14 @@ class Users():
             row = cursor.fetchone()
             if row is not None:
                 access_token = create_access_token(identity={"username": row[0], "admin": row[2], "id": row[3]})
-                response = jsonify({"msg":"User Successfully logged in", "access_token":access_token})
+                response = jsonify({"success":"User Successfully logged in", "access_token":access_token})
                 response.status_code = 200
                 return response
-            response = jsonify({"msg" : "Error logging in, credentials not found"})
+            response = jsonify({"error" : "Error logging in, credentials not found"})
             response.status_code = 401
             return response
         except (Exception, psycopg2.DatabaseError) as error:
-            response = jsonify({'msg':'Problem fetching record from the database'})
+            response = jsonify({'error':'Problem fetching record from the database'})
             response.status_code = 400
             return response
 
@@ -49,10 +49,10 @@ class Users():
             return {'error': 'Fields cannot be empty'}, 401
 
         if password != confirm:
-            return {'msg':"Passwords do not match"}, 401
+            return {'error':"Passwords do not match"}, 401
 
         if len(password) < 6 or len(password) > 12:
-            return {'msg': "Password length should be between 6 and 12 characters long"}, 401
+            return {'error': "Password length should be between 6 and 12 characters long"}, 401
 
         duplicate = db.check_if_user_exists(name)
         if duplicate:
@@ -66,11 +66,11 @@ class Users():
             cursor = connection.cursor()
             cursor.execute(add_user)
             connection.commit()
-            response = jsonify({'msg':'User Successfully Created'})
+            response = jsonify({'success':'User Successfully Created'})
             response.status_code = 201
             return response
         except (Exception, psycopg2.DatabaseError) as error:
-            response = jsonify({'msg':'Problem fetching record from the database'})
+            response = jsonify({'error':'Problem fetching record from the database'})
             response.status_code = 400
             return response
 
@@ -84,7 +84,7 @@ class Users():
             users = cursor.fetchall()
             users_list = []
             if users is None:
-                return {'msg':'No users found'}, 200
+                return {'error':'No users found'}, 200
             if users:
                 for user in users:
                     users_dict = {
@@ -96,7 +96,7 @@ class Users():
             return {'users' : users_list}, 200
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-            response = jsonify({'msg':'Problem fetching record from the database'})
+            response = jsonify({'error':'Problem fetching record from the database'})
             response.status_code = 400
             return response
 
@@ -109,7 +109,7 @@ class Users():
             cursor.execute(get_user)
             user = cursor.fetchone()
             if user is None:
-                return {'msg':'User not found'}, 404
+                return {'error':'User not found'}, 404
             if user:
                 users_dict = {
                     "user_id" : user[0],
@@ -119,6 +119,6 @@ class Users():
                 return {'users' : users_dict}, 200
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-            response = jsonify({'msg':'Problem fetching record from the database'})
+            response = jsonify({'error':'Problem fetching record from the database'})
             response.status_code = 400
             return response

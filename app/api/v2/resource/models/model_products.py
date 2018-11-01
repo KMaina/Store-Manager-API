@@ -20,11 +20,11 @@ class Products():
 
         # Checks for empty fields
         if name == '' or quantity == '' or product_cost == '' or reorder == '':
-            return {'msg':'Fields cannot be empty'}, 401
+            return {'error':'Fields cannot be empty'}, 401
 
         # Checks for values less than 1
         if quantity < 1 or product_cost < 1 or reorder < 1:
-            return {'msg':'Values cannot be less than 1'}, 401
+            return {'error':'Values cannot be less than 1'}, 401
 
         # Check if a product exists
         product_duplicate = db.check_if_product_exists(name)
@@ -41,11 +41,11 @@ class Products():
             cursor = connection.cursor()
             cursor.execute(new_product)
             connection.commit()
-            response = jsonify({'msg':'Product Successfully Created'})
+            response = jsonify({'success':'Product Successfully Created'})
             response.status_code = 201
             return response
         except (Exception, psycopg2.DatabaseError) as error:
-            response = jsonify({'msg':'Problem inserting record into the database'})
+            response = jsonify({'error':'Problem inserting record into the database'})
             response.status_code = 400
             return response
 
@@ -55,7 +55,7 @@ class Products():
         # Check if the product exists
         product_id = db.get_db_id(table_name='products', column='product_id', data=productId)
         if product_id == False:
-            return {'msg':'Product does not exist'}, 404
+            return {'error':'Product does not exist'}, 404
 
         try:
             product_delete = "delete from products where product_id = {}".format(productId)
@@ -63,11 +63,11 @@ class Products():
             cursor = connection.cursor()
             cursor.execute(product_delete)
             connection.commit()
-            response = jsonify({'msg':'Product Successfully Deleted'})
+            response = jsonify({'success':'Product Successfully Deleted'})
             response.status_code = 200
             return response
         except (Exception, psycopg2.DatabaseError) as error:
-            response = jsonify({'msg':'Problem inserting record into the database'})
+            response = jsonify({'error':'Problem inserting record into the database'})
             response.status_code = 400
             return response
 
@@ -84,16 +84,16 @@ class Products():
 
         # Checks for empty fields
         if name == '' or quantity == '' or product_cost == '' or reorder == '':
-            return {'msg':'Fields cannot be empty'}, 401
+            return {'error':'Fields cannot be empty'}, 401
 
         # Checks for values less than 1
         if quantity < 1 or product_cost < 1 or reorder < 1:
-            return {'msg':'Values cannot be less than 1'}, 401
+            return {'error':'Values cannot be less than 1'}, 401
 
         # Check if a product exists
         product_duplicate = db.get_quantity_of_products(name)
         if not product_duplicate:
-            return {'msg':'product does not exist'}, 401
+            return {'error':'product does not exist'}, 401
 
         # Get the quantity added
         get_quantity = db.get_quantity_of_products(name)
@@ -113,11 +113,11 @@ class Products():
             cursor = connection.cursor()
             cursor.execute(modify_product)
             connection.commit()
-            response = jsonify({'msg':'Product Successfully Edited'})
+            response = jsonify({'success':'Product Successfully Edited'})
             response.status_code = 200
             return response
         except (Exception, psycopg2.DatabaseError) as error:
-            response = jsonify({'msg':'Problem inserting record into the database'})
+            response = jsonify({'error':'Problem inserting record into the database'})
             response.status_code = 400
             return response
 
@@ -131,7 +131,7 @@ class Products():
             products = cursor.fetchall()
             products_list = []
             if products is None:
-                return {'msg':'No products found'}, 404
+                return {'error':'No products found'}, 404
             if products:
                 for product in products:
                     products_dict = {
@@ -143,10 +143,9 @@ class Products():
                         "username" : product[5]
                     }
                     products_list.append(products_dict)
-            return {'users' : products_list}, 200
+            return {'products' : products_list}, 200
         except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-            response = jsonify({'msg':'Problem fetching record from the database'})
+            response = jsonify({'error':'Problem fetching record from the database'})
             response.status_code = 400
             return response
     
@@ -162,7 +161,7 @@ class Products():
             cursor.execute(all_products)
             product = cursor.fetchone()
             if product is None:
-                return {'msg':'No products found'}, 404
+                return {'error':'No products found'}, 404
             if product:
                 product_dict = {
                     "product_id" : product[0],
@@ -174,7 +173,6 @@ class Products():
                 }
                 return {'users' : product_dict}, 200
         except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
-            response = jsonify({'msg':'Problem fetching record from the database'})
+            response = jsonify({'error':'Problem fetching record from the database'})
             response.status_code = 400
             return response
