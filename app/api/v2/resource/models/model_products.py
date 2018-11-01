@@ -143,9 +143,8 @@ class Products():
                         "username" : product[5]
                     }
                     products_list.append(products_dict)
-            return {'users' : products_list}, 200
+            return {'products' : products_list}, 200
         except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
             response = jsonify({'msg':'Problem fetching record from the database'})
             response.status_code = 400
             return response
@@ -174,7 +173,6 @@ class Products():
                 }
                 return {'users' : product_dict}, 200
         except (Exception, psycopg2.DatabaseError) as error:
-            print(error)
             response = jsonify({'msg':'Problem fetching record from the database'})
             response.status_code = 400
             return response
