@@ -40,7 +40,7 @@ class RegisterUsers(Resource):
         args = parser.parse_args()
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
-            return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
+            return {'error': 'Sorry, only admins are allowed to access this route'}, 403
         return Users().reg_user(
             args['name'],
             args['password'],
@@ -56,7 +56,7 @@ class GetAllUser(Resource):
         """Route to get all users"""
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
-            return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
+            return {'error': 'Sorry, only admins are allowed to access this route'}, 403
         return Users().get_all_users()
 
 class GetUsers(Resource):
@@ -69,5 +69,5 @@ class GetUsers(Resource):
         """Route to get all users"""
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
-            return {'msg': 'Sorry, only admins are allowed to access this route'}, 403
+            return {'error': 'Sorry, only admins are allowed to access this route'}, 403
         return Users().get_one_user(userId)
