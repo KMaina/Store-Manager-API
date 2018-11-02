@@ -30,7 +30,7 @@ class NewProduct(Resource):
         args = parser.parse_args()
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
-            return {'msg':'Sorry, this route is only accessible to admins'}, 403
+            return {'error':'Sorry, this route is only accessible to admins'}, 403
         return Products().add_product(
             args['name'],
             args['quantity'],
@@ -52,7 +52,7 @@ class EditProducts(Resource):
         """Route to delete a product"""
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
-            return {'msg':'Sorry, this route is only accessible to admins'}, 403
+            return {'error':'Sorry, this route is only accessible to admins'}, 403
         return Products().delete_product(productId)
 
     @jwt_required
@@ -61,7 +61,7 @@ class EditProducts(Resource):
         args = parser.parse_args()
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
-            return {'msg':'Sorry, this route is only accessible to admins'}, 403
+            return {'error':'Sorry, this route is only accessible to admins'}, 403
         return Products().edit_product(
             args['name'],
             args['quantity'],

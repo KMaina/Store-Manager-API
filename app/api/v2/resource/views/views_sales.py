@@ -20,7 +20,7 @@ class MakeSales(Resource):
 
         current_user = get_jwt_identity()
         if current_user['admin'] == True:
-            return {'msg':'Sorry, this route is only accessible to sales attendants'}, 403
+            return {'error':'Sorry, this route is only accessible to sales attendants'}, 403
         return Sales().add_sale(
             args['name'],
             args['quantity'])
@@ -30,7 +30,7 @@ class MakeSales(Resource):
         """Route to handle fetching all sales"""
         current_user = get_jwt_identity()
         if current_user['admin'] == False:
-            return {'msg':'Sorry, this route is only accessible to admins'}, 403
+            return {'error':'Sorry, this route is only accessible to admins'}, 403
         return Sales().get_all_sales()
 
 class GetSale(Resource):
