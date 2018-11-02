@@ -67,4 +67,7 @@ class GetUsers(Resource):
     @jwt_required
     def get(self, userId):
         """Route to get all users"""
+        current_user = get_jwt_identity()
+        if current_user['admin'] == False:
+            return {'error': 'Sorry, only admins are allowed to access this route'}, 403
         return Users().get_one_user(userId)
